@@ -6,8 +6,9 @@ services:
     build: .
     restart: unless-stopped
     ports:
-      - "${PORT:-4242}:4242"
+      - "0.0.0.0:${PORT:-4242}:4242"
     environment:
+      HOST: 0.0.0.0
       PORT: 4242
       NODE_ENV: production
     volumes:
