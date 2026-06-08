@@ -54,7 +54,7 @@ docker compose logs -f app
 
 ## Не открывается снаружи (Hostinger)
 
-**Важно:** hello-iam слушает порт **4242**, не 8082 (8082 — это другой проект, units-gen).
+**Важно:** приложение слушает порт **4242**. На Hostinger снаружи он часто закрыт — используй Traefik (вариант B).
 
 ### Вариант A — открыть порт напрямую (проще всего)
 
@@ -102,19 +102,15 @@ BASIC_AUTH_HASH=$$apr1$$...
 
 Сайт: `https://helloiam.твой-домен.com`
 
-### Убрать старый Caddy
+### Контент (посты и медиа)
 
-Старый Caddy от units-gen больше не нужен:
+Код и контент — в разных репозиториях. После деплоя:
 
 ```bash
-docker ps -a | grep -i caddy
-# остановить старый стек (путь к папке, где был units-gen):
-cd /path/to/old-project && docker compose down
-# или вручную:
-docker stop caddy 2>/dev/null; docker rm caddy 2>/dev/null
+./scripts/sync-content.sh /docker/hello-iam-v3
 ```
 
-Не смешивай `expose: 8082` из старого compose с hello-iam — это разные проекты и порты.
+Источник: [hello-iam-content](https://github.com/MolotilkaHolotilka/hello-iam-content)
 
 ---
 

@@ -3,6 +3,11 @@ import { mkdir, readdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { PATHS } from "../lib/config.js";
 import {
+  ALLOWED_TEMPLATE_IDS,
+  isPublicTemplateId,
+  shouldIncludeTemplateDir
+} from "../lib/template-allowlist.js";
+import {
   parseJsonInput,
   RenderValidationError,
   resolveRenderProps
@@ -60,6 +65,11 @@ function validateTemplateId(templateId) {
   if (!/^[a-z0-9][a-z0-9-]{1,63}$/.test(templateId)) {
     throw new RenderValidationError("Template id is invalid", [
       "Use 2-64 chars: lowercase letters, numbers, and hyphens."
+    ]);
+  }
+  if (!isPublicTemplateId(templateId)) {
+    throw new RenderValidationError("Template is not allowed", [
+      `Allowed templates: ${ALLOWED_TEMPLATE_IDS.join(", ")}`
     ]);
   }
 }
@@ -226,6 +236,7 @@ async function listTemplateModuleDirs() {
 
   for (const entry of entries) {
     if (!entry.isDirectory()) continue;
+    if (!shouldIncludeTemplateDir(entry.name)) continue;
 
     const templateDir = path.join(TEMPLATES_ROOT, entry.name);
     if (!existsSync(path.join(templateDir, "template.tsx"))) continue;

@@ -7,7 +7,7 @@ export const TEMPLATE_RENDER_DURATION = 180;
 export const TEMPLATE_RENDER_PORTRAIT_DURATION = 630;
 
 export const DEFAULT_TEMPLATE_PROPS: TemplateRenderProps = {
-  templateId: 'armenian-food-carousel',
+  templateId: 'i-am-lavash-deep-dive',
   format: 'carousel',
   animationPreset: 'clean-rise',
   workflow: {

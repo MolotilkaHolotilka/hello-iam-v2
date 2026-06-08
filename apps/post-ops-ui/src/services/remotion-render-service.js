@@ -4,6 +4,7 @@ import { existsSync } from "node:fs";
 import { mkdir, readdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { PATHS } from "../lib/config.js";
+import { shouldIncludeTemplateDir } from "../lib/template-allowlist.js";
 import { animationPresets } from "./props-resolver.js";
 import {
   prepareWorkflowPayload,
@@ -84,6 +85,7 @@ export async function listRenderTemplates() {
 
   for (const entry of entries) {
     if (!entry.isDirectory()) continue;
+    if (!shouldIncludeTemplateDir(entry.name)) continue;
 
     const templateDir = path.join(TEMPLATES_ROOT, entry.name);
     const templateFile = path.join(templateDir, "template.tsx");

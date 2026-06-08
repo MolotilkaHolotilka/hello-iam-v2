@@ -2,11 +2,12 @@ import fs from "node:fs/promises";
 
 const API = "http://localhost:4242";
 const TEMPLATE_IDS = [
+  "i-am-khachkar-deep-dive",
   "i-am-lavash-deep-dive",
   "i-am-matsun-deep-dive",
   "i-am-dolma-deep-dive"
 ];
-const OUT_LOG = "render-deep-dive-trio-results.json";
+const OUT_LOG = "render-deep-dive-results.json";
 
 async function loadTemplate(id) {
   const res = await fetch(`${API}/api/templates`);
