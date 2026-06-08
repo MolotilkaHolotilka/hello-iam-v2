@@ -1,0 +1,73 @@
+:root {
+  --accent: #d61e23;
+  --background: #d9dde0;
+  --title-color: #0f0f10;
+  --label-color: #000000;
+}
+
+.card-1 {
+  position: relative;
+  width: 1080px;
+  height: 1350px;
+  overflow: hidden;
+  background: var(--background);
+}
+
+.card-1 .hero-image {
+  position: absolute;
+  left: -182px;
+  top: -238px;
+  width: 2060px;
+  height: 2060px;
+  object-fit: contain;
+  object-position: center;
+}
+
+.card-1 .title-block {
+  position: absolute;
+  left: 40px;
+  top: 40px;
+  width: 636px;
+  height: 468px;
+  font-family: "Instrument Sans", sans-serif;
+  font-weight: 700;
+  font-size: 164px;
+  line-height: 156px;
+  text-transform: uppercase;
+  white-space: pre-line;
+}
+
+.card-1 .title-line {
+  color: var(--title-color);
+}
+
+.card-1 .title-accent {
+  color: var(--accent);
+}
+
+.card-1 .label {
+  position: absolute;
+  left: 40px;
+  top: 1285px;
+  width: 248px;
+  height: 32px;
+  font-family: "Instrument Sans", sans-serif;
+  font-weight: 700;
+  font-size: 26px;
+  line-height: 32px;
+  text-transform: uppercase;
+  color: var(--label-color);
+  display: flex;
+  align-items: flex-end;
+}
+
+.card-1 .label:hover {
+  opacity: 0.9;
+}
+
+@media (max-width: 1080px) {
+  .card-1 .title-block {
+    font-size: 140px;
+    line-height: 132px;
+  }
+}

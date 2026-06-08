@@ -4,7 +4,12 @@ import { existsSync } from "node:fs";
 import { mkdir, readdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { PATHS } from "../lib/config.js";
-import { shouldIncludeTemplateDir } from "../lib/template-allowlist.js";
+import {
+  ALLOWED_TEMPLATE_IDS,
+  BUILTIN_TEMPLATE_IDS,
+  getPublicTemplateLabel,
+  shouldIncludeTemplateDir
+} from "../lib/template-allowlist.js";
 import { animationPresets } from "./props-resolver.js";
 import {
   prepareWorkflowPayload,
@@ -31,6 +36,68 @@ const COMPOSITION_DURATIONS = {
   TemplateRender: 180,
   TemplateRenderPortrait: 630
 };
+const REMOTION_CONCURRENCY_DEFAULT = 6;
+const PARALLEL_MAX_CAP = 6;
+const REMOTION_PARALLEL_STILLS_DEFAULT = 4;
+const REMOTION_PARALLEL_RENDERS_DEFAULT = 3;
+
+function getParallelLimit(envKey, defaultValue) {
+  const env = process.env[envKey];
+  if (env !== undefined && env !== "") {
+    const parsed = Number.parseInt(env, 10);
+    if (Number.isFinite(parsed) && parsed > 0) {
+      return Math.min(parsed, PARALLEL_MAX_CAP);
+    }
+  }
+
+  return Math.min(defaultValue, PARALLEL_MAX_CAP);
+}
+
+function getParallelStills() {
+  return getParallelLimit("REMOTION_PARALLEL_STILLS", REMOTION_PARALLEL_STILLS_DEFAULT);
+}
+
+function getParallelRenders() {
+  return getParallelLimit("REMOTION_PARALLEL_RENDERS", REMOTION_PARALLEL_RENDERS_DEFAULT);
+}
+
+async function runInParallelPool(items, limit, worker) {
+  if (items.length === 0) {
+    return [];
+  }
+
+  let nextIndex = 0;
+  const results = new Array(items.length);
+
+  async function runWorker() {
+    while (nextIndex < items.length) {
+      const currentIndex = nextIndex;
+      nextIndex += 1;
+      results[currentIndex] = await worker(items[currentIndex], currentIndex);
+    }
+  }
+
+  const workerCount = Math.min(limit, items.length);
+  await Promise.all(Array.from({ length: workerCount }, () => runWorker()));
+  return results;
+}
+
+function getRenderConcurrency() {
+  const env = process.env.REMOTION_CONCURRENCY;
+  if (env !== undefined && env !== "") {
+    const parsed = Number.parseInt(env, 10);
+    if (Number.isFinite(parsed) && parsed > 0) {
+      return parsed;
+    }
+  }
+
+  return REMOTION_CONCURRENCY_DEFAULT;
+}
+
+function withRenderConcurrency(args) {
+  const concurrency = getRenderConcurrency();
+  return [...args, "--concurrency", String(concurrency)];
+}
 
 class RenderExecutionError extends Error {
   constructor(message, details = []) {
@@ -118,7 +185,7 @@ export async function listRenderTemplates() {
 
     templates.push({
       id: entry.name,
-      name: readmeInfo.name || entry.name,
+      name: getPublicTemplateLabel(entry.name) || readmeInfo.name || entry.name,
       format: mappingExample.format || "video",
       workflow,
       mappingExample,
@@ -129,7 +196,31 @@ export async function listRenderTemplates() {
     });
   }
 
-  templates.sort((a, b) => a.id.localeCompare(b.id));
+  const foundIds = new Set(templates.map((template) => template.id));
+  for (const templateId of ALLOWED_TEMPLATE_IDS) {
+    if (foundIds.has(templateId)) continue;
+
+    templates.push({
+      id: templateId,
+      name: getPublicTemplateLabel(templateId) || templateId,
+      format: "video",
+      workflow: {},
+      mappingExample: {},
+      contentExample: { cards: [] },
+      readme: "",
+      assetsRoot: "",
+      assetPaths: []
+    });
+  }
+
+  templates.sort((a, b) => {
+    const aBuiltin = BUILTIN_TEMPLATE_IDS.indexOf(a.id);
+    const bBuiltin = BUILTIN_TEMPLATE_IDS.indexOf(b.id);
+    if (aBuiltin >= 0 && bBuiltin >= 0) return aBuiltin - bBuiltin;
+    if (aBuiltin >= 0) return -1;
+    if (bBuiltin >= 0) return 1;
+    return a.id.localeCompare(b.id);
+  });
 
   return {
     templates,
@@ -238,7 +329,13 @@ export async function renderTemplate(payload) {
   await writeFile(propsPath, `${JSON.stringify(resolved.props, null, 2)}\n`, "utf8");
 
   const segmentFrames = Math.max(1, Math.floor(compositionDuration / cardCount));
-  for (let index = 0; index < pngPaths.length; index += 1) {
+  const parallelStills = getParallelStills();
+  const parallelRenders = getParallelRenders();
+  console.log(
+    `[remotion-render] parallel stills=${parallelStills} renders=${parallelRenders}`
+  );
+
+  await runInParallelPool(pngPaths, parallelStills, async (pngOutPath, index) => {
     const frame = Math.min(
       compositionDuration - 1,
       index * segmentFrames + Math.max(0, Math.min(30, segmentFrames - 1))
@@ -248,7 +345,7 @@ export async function renderTemplate(payload) {
         "still",
         REMOTION_ENTRY,
         compositionId,
-        pngPaths[index],
+        pngOutPath,
         "--props",
         propsPath,
         "--frame",
@@ -256,34 +353,52 @@ export async function renderTemplate(payload) {
       ],
       `PNG card ${index + 1} render`
     );
-  }
+  });
   await writeFile(pngPath, await readFile(pngPaths[0]));
 
+  if (!pngOnly) {
+    const renderConcurrency = getRenderConcurrency();
+    console.log(
+      `[remotion-render] starting video render (concurrency=${renderConcurrency})`
+    );
+  }
+
   if (!pngOnly && splitVideos) {
-    for (let index = 0; index < cardCount; index += 1) {
-      const startFrame = index * segmentFrames;
-      const endFrame = Math.min(
-        compositionDuration - 1,
-        (index + 1) * segmentFrames - 1
-      );
-      await runRemotion(
-        [
-          "render",
-          REMOTION_ENTRY,
-          compositionId,
-          mp4PartPaths[index],
-          "--props",
-          propsPath,
-          "--frames",
-          `${startFrame}-${endFrame}`
-        ],
-        `MP4 card ${index + 1} render`
-      );
-    }
+    await runInParallelPool(
+      Array.from({ length: cardCount }, (_item, index) => index),
+      parallelRenders,
+      async (index) => {
+        const startFrame = index * segmentFrames;
+        const endFrame = Math.min(
+          compositionDuration - 1,
+          (index + 1) * segmentFrames - 1
+        );
+        await runRemotion(
+          withRenderConcurrency([
+            "render",
+            REMOTION_ENTRY,
+            compositionId,
+            mp4PartPaths[index],
+            "--props",
+            propsPath,
+            "--frames",
+            `${startFrame}-${endFrame}`
+          ]),
+          `MP4 card ${index + 1} render`
+        );
+      }
+    );
     await writeFile(mp4Path, await readFile(mp4PartPaths[0]));
   } else if (!pngOnly) {
     await runRemotion(
-      ["render", REMOTION_ENTRY, compositionId, mp4Path, "--props", propsPath],
+      withRenderConcurrency([
+        "render",
+        REMOTION_ENTRY,
+        compositionId,
+        mp4Path,
+        "--props",
+        propsPath
+      ]),
       "MP4 render"
     );
   }

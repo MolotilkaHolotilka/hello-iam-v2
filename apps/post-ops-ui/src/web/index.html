@@ -24,28 +24,75 @@
 
       <section class="mvp-controls" aria-label="Render controls">
         <label class="mvp-field">
-          <span>Template</span>
+          <span>Template <span id="template-demo-badge" class="mvp-demo-badge" hidden>Demo</span></span>
           <select id="template-select"></select>
         </label>
 
-        <label class="mvp-field">
+        <label id="animation-preset-field" class="mvp-field mvp-control-advanced">
           <span>Animation preset</span>
           <select id="animation-preset"></select>
         </label>
       </section>
 
-      <article class="mvp-panel mvp-template-panel" aria-label="Template cards">
-        <div class="mvp-panel-head">
+      <section
+        id="content-cards-section"
+        class="mvp-cards-section mvp-studio-section"
+        aria-label="Studio editor"
+        hidden
+      >
+        <div class="mvp-cards-section-head">
           <div>
-            <h2>Template cards</h2>
-            <p id="content-file-label" class="mvp-content-file-label">Using template default content.</p>
+            <h2>Studio</h2>
+            <p id="content-cards-hint" class="mvp-cards-hint">Loading content...</p>
           </div>
-          <input id="content-file" type="file" accept=".json,application/json" />
+          <p id="content-file-label" class="mvp-content-file-label">Using saved template content.</p>
         </div>
-        <div id="template-cards-grid" class="mvp-template-cards-grid"></div>
-      </article>
+        <p id="demo-banner" class="mvp-demo-banner" hidden>
+          Built-in demo — edit optional
+        </p>
+        <p id="content-cards-error" class="mvp-cards-error" hidden></p>
+        <div
+          id="content-cards-carousel-shell"
+          class="mvp-cards-carousel-shell"
+          hidden
+          aria-label="Card preview carousel"
+        >
+          <button
+            type="button"
+            class="mvp-carousel-arrow mvp-carousel-arrow-side"
+            data-carousel-nav="prev"
+            aria-label="Previous card"
+          >
+            ←
+          </button>
+          <div class="mvp-cards-carousel-viewport" id="content-cards-carousel-viewport">
+            <div class="mvp-cards-carousel-track" id="content-cards-carousel-track"></div>
+          </div>
+          <button
+            type="button"
+            class="mvp-carousel-arrow mvp-carousel-arrow-side"
+            data-carousel-nav="next"
+            aria-label="Next card"
+          >
+            →
+          </button>
+        </div>
+        <details id="studio-editor-details" class="mvp-studio-advanced">
+          <summary class="mvp-studio-advanced-summary">Edit content (optional)</summary>
+          <div id="content-root-fields" class="mvp-cards-root-fields"></div>
+          <div class="mvp-cards-nav" id="content-cards-nav"></div>
+          <article id="content-card-panel" class="mvp-card-panel"></article>
+        </details>
+      </section>
 
       <div class="mvp-run-row">
+        <button id="save-content" class="mvp-secondary-button" type="button" disabled>
+          Save Content
+        </button>
+        <label class="mvp-quick-render-toggle" for="quick-render">
+          <input id="quick-render" type="checkbox" />
+          <span>Quick render (1 card, PNG only)</span>
+        </label>
         <button id="run-render" class="mvp-run-button" type="button">
           Run Render
         </button>
@@ -54,6 +101,9 @@
       <section id="status-box" class="mvp-status-box" data-tone="neutral"></section>
 
       <section id="output-panel" class="mvp-output" hidden>
+        <p id="quick-render-note" class="mvp-quick-render-note" hidden>
+          Quick mode — 1 card PNG only
+        </p>
         <div class="mvp-output-toolbar" role="toolbar" aria-label="Output view and downloads">
           <div class="mvp-output-toolbar-start">
             <div class="mvp-output-toolbar-toggles" role="group" aria-label="Preview type">

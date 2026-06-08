@@ -10,7 +10,9 @@ const cardsEditorState = {
   layoutTimer: null,
   workflow: { width: 1080, height: 1350 },
   templateId: "",
-  assetPaths: []
+  assetPaths: [],
+  uploadHandler: null,
+  changeHandler: null
 };
 
 const COLOR_KEY =
@@ -81,7 +83,12 @@ function renderField(key, value, cardIndex) {
   if (kind === "image") {
     const preview = assetPreviewUrl(value);
     return `${label}
-      <input type="text" id="${escapeHtml(id)}" list="content-asset-paths" data-card-index="${cardIndex}" data-field-key="${escapeHtml(key)}" value="${escapeHtml(value ?? "")}" spellcheck="false" placeholder="templates/${escapeHtml(cardsEditorState.templateId || "<id>")}/images/…" />
+      <input type="hidden" id="${escapeHtml(id)}" data-card-index="${cardIndex}" data-field-key="${escapeHtml(key)}" value="${escapeHtml(value ?? "")}" />
+      <code class="mvp-card-image-path">${escapeHtml(value || "No image selected")}</code>
+      <div class="mvp-card-upload-row">
+        <input type="file" id="${escapeHtml(id)}-upload" data-image-upload="true" data-card-index="${cardIndex}" data-field-key="${escapeHtml(key)}" accept="image/png,image/jpeg,image/webp,image/gif,image/svg+xml" />
+        <span>Upload image</span>
+      </div>
       ${preview ? `<img class="mvp-card-image-preview" data-preview-for="${escapeHtml(id)}" src="${escapeHtml(preview)}" alt="" />` : ""}
     </label>`;
   }
@@ -157,6 +164,14 @@ export function setContentCardsAssetPaths(assetPaths = [], templateId = "") {
   cardsEditorState.assetPaths = Array.isArray(assetPaths) ? assetPaths : [];
   cardsEditorState.templateId = templateId || "";
   updateAssetDatalist();
+}
+
+export function setContentCardsUploadHandler(handler) {
+  cardsEditorState.uploadHandler = typeof handler === "function" ? handler : null;
+}
+
+export function setContentCardsChangeHandler(handler) {
+  cardsEditorState.changeHandler = typeof handler === "function" ? handler : null;
 }
 
 function updateAssetDatalist() {
@@ -346,6 +361,7 @@ function applyFieldChange(contentSource, formatJson, { cardIndex, rootKey, field
   }
 
   writeContentJson(contentSource, next, formatJson);
+  cardsEditorState.changeHandler?.(next);
 }
 
 function syncColorInputs(source) {
@@ -383,7 +399,7 @@ export function setupContentCardsEditor(contentSource, formatJson) {
 
     applyFieldChange(contentSource, formatJson, {
       rootKey: rootKey || undefined,
-      cardIndex: cardIndexRaw ? Number(cardIndexRaw) : undefined,
+      cardIndex: cardIndexRaw !== null ? Number(cardIndexRaw) : undefined,
       fieldKey: fieldKey || undefined,
       value
     });
@@ -391,7 +407,7 @@ export function setupContentCardsEditor(contentSource, formatJson) {
     const parsedAfter = getParsedContent(contentSource);
     if (parsedAfter.ok) {
       const cards = parsedAfter.data.cards;
-      const cardIndex = cardIndexRaw ? Number(cardIndexRaw) : null;
+      const cardIndex = cardIndexRaw !== null ? Number(cardIndexRaw) : null;
       if (typeof cardIndex === "number" && cards[cardIndex]) {
         refreshCarouselSlide(cards[cardIndex], cardIndex, cards.length);
       }
@@ -399,6 +415,43 @@ export function setupContentCardsEditor(contentSource, formatJson) {
 
     if (fieldKey && IMAGE_KEY.test(fieldKey)) {
       updateImagePreviews(document.getElementById("content-card-panel"));
+    }
+  });
+
+  section.addEventListener("change", async (event) => {
+    const target = event.target;
+    if (!(target instanceof HTMLInputElement)) return;
+    if (target.dataset.imageUpload !== "true") return;
+
+    const file = target.files?.[0];
+    const cardIndexRaw = target.getAttribute("data-card-index");
+    const fieldKey = target.getAttribute("data-field-key");
+    if (!file || cardIndexRaw === null || !fieldKey || !cardsEditorState.uploadHandler) {
+      target.value = "";
+      return;
+    }
+
+    target.disabled = true;
+    try {
+      const result = await cardsEditorState.uploadHandler(file, {
+        cardIndex: Number(cardIndexRaw),
+        fieldKey,
+        templateId: cardsEditorState.templateId
+      });
+      if (result?.assetPaths) {
+        setContentCardsAssetPaths(result.assetPaths, cardsEditorState.templateId);
+      }
+      if (result?.path) {
+        applyFieldChange(contentSource, formatJson, {
+          cardIndex: Number(cardIndexRaw),
+          fieldKey,
+          value: result.path
+        });
+        renderContentCardsEditor(contentSource, formatJson);
+      }
+    } finally {
+      target.value = "";
+      target.disabled = false;
     }
   });
 

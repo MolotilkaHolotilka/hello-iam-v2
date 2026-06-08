@@ -1,0 +1,33 @@
+{
+  "item": "pipeline-demo",
+  "cards": [
+    {
+      "title": "HELLO, I AM",
+      "titleAccent": "PIPELINE DEMO",
+      "label": "AM DEMO",
+      "image": "templates/pipeline-demo/images/demo_1.png",
+      "background": "#D9DDE0",
+      "titleColor": "#0F0F10",
+      "accentColor": "#D61E23",
+      "labelColor": "#000000"
+    },
+    {
+      "title": "Pipeline Demo",
+      "image": "templates/pipeline-demo/images/demo_2.png",
+      "quote": "This is a built-in demo template for the hello-iam pipeline preview. No user images or text required — everything is pre-filled.",
+      "label": "AM DEMO",
+      "background": "#D9DDE0",
+      "quoteColor": "#D61E23",
+      "titleColor": "#0F0F10",
+      "accentColor": "#D61E23",
+      "labelColor": "#000000"
+    },
+    {
+      "brandLeft": "helloiam",
+      "brandRight": "am",
+      "image": "templates/pipeline-demo/images/demo_3.png",
+      "background": "#D9DDE0",
+      "brandColor": "#420000"
+    }
+  ]
+}

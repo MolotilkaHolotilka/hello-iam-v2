@@ -12,12 +12,23 @@ import {
   resolvePropsForRender
 } from "./services/remotion-render-service.js";
 import {
+  createRenderZipStream,
+  getDownloadFilename,
+  renderRunExists,
+  resolveRenderRunDir
+} from "./services/render-download-service.js";
+import {
   deleteTemplateAsset,
   ensureTemplateAssetDirs,
   getTemplateBucketDir,
   listTemplateAssets,
   sanitizeAssetFileName
 } from "./services/template-assets-service.js";
+import {
+  getTemplateContentPayload,
+  updateTemplateContent
+} from "./services/content-template-service.js";
+import { importCssToTemplate } from "./services/css-import-service.js";
 
 const appRootDir = path.join(path.dirname(fileURLToPath(import.meta.url)), "..");
 dotenv.config({ path: path.join(appRootDir, ".env") });
@@ -79,6 +90,43 @@ app.get("/api/templates/:templateId/assets", async (req, res) => {
     res.json(payload);
   } catch (error) {
     res.status(400).json({ error: error.message });
+  }
+});
+
+app.get("/api/templates/:templateId/content", async (req, res) => {
+  try {
+    const payload = await getTemplateContentPayload(req.params.templateId);
+    res.json(payload);
+  } catch (error) {
+    res.status(error.statusCode || 400).json({
+      error: error.message,
+      details: error.details || []
+    });
+  }
+});
+
+app.patch("/api/templates/:templateId/content", async (req, res) => {
+  try {
+    const payload = await updateTemplateContent(req.params.templateId, req.body?.content);
+    res.json(payload);
+  } catch (error) {
+    res.status(error.statusCode || 400).json({
+      error: error.message,
+      details: error.details || []
+    });
+  }
+});
+
+app.post("/api/templates/import-css", async (req, res) => {
+  try {
+    const payload = await importCssToTemplate(req.body || {});
+    res.json(payload);
+  } catch (error) {
+    res.status(error.statusCode || 400).json({
+      error: error.message,
+      code: error.code || "CSS_IMPORT_ERROR",
+      details: error.details || []
+    });
   }
 });
 
@@ -147,6 +195,57 @@ app.post("/api/render", async (req, res) => {
   }
 });
 
+async function sendRenderZipDownload(req, res, mode) {
+  const runId = req.params.runId;
+  const runDir = resolveRenderRunDir(runId);
+
+  if (!runDir || !renderRunExists(runId)) {
+    res.status(404).json({ error: "Render run not found" });
+    return;
+  }
+
+  try {
+    const { archive, appendFiles } = createRenderZipStream(runDir, mode);
+    const files = await appendFiles();
+
+    if (files.length === 0) {
+      res.status(404).json({ error: `No ${mode} files found for this render run` });
+      return;
+    }
+
+    const filename = getDownloadFilename(runId, mode);
+    res.setHeader("Content-Type", "application/zip");
+    res.setHeader("Content-Disposition", `attachment; filename="${filename}"`);
+
+    archive.on("error", (error) => {
+      if (!res.headersSent) {
+        res.status(500).json({ error: error.message });
+        return;
+      }
+      res.end();
+    });
+
+    archive.pipe(res);
+    await archive.finalize();
+  } catch (error) {
+    if (!res.headersSent) {
+      res.status(500).json({ error: error.message });
+    }
+  }
+}
+
+app.get("/api/render/download/:runId/images.zip", (req, res) => {
+  sendRenderZipDownload(req, res, "images");
+});
+
+app.get("/api/render/download/:runId/video.zip", (req, res) => {
+  sendRenderZipDownload(req, res, "video");
+});
+
+app.get("/api/render/download/:runId/all.zip", (req, res) => {
+  sendRenderZipDownload(req, res, "all");
+});
+
 app.post("/api/index/rebuild", async (_req, res) => {
   const index = await buildIndex();
   res.json(index);
@@ -178,7 +277,19 @@ app.get("/assets.html", (_req, res) => {
   res.sendFile(path.join(PATHS.webDir, "assets.html"));
 });
 
+app.get("/import", (_req, res) => {
+  res.sendFile(path.join(PATHS.webDir, "import.html"));
+});
+
+app.get("/import.html", (_req, res) => {
+  res.sendFile(path.join(PATHS.webDir, "import.html"));
+});
+
 app.get("/dev.html", (_req, res) => {
+  res.sendFile(path.join(PATHS.webDir, "dev.html"));
+});
+
+app.get("/dev", (_req, res) => {
   res.sendFile(path.join(PATHS.webDir, "dev.html"));
 });
 

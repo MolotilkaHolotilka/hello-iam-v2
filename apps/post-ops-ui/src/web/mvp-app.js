@@ -1,4 +1,12 @@
 import {
+  refreshContentCardsEditor,
+  setContentCardsAssetPaths,
+  setContentCardsChangeHandler,
+  setContentCardsUploadHandler,
+  setContentCardsWorkflow,
+  setupContentCardsEditor
+} from "./mvp-cards-editor.js";
+import {
   createContentSource,
   getStoredContentLabel,
   getStoredTemplateId,
@@ -8,18 +16,75 @@ import {
 } from "./mvp-content-source.js";
 import { renderMvpNav } from "./mvp-nav.js";
 
+const DEMO_TEMPLATE_ID = "pipeline-demo";
+const DEFAULT_TEMPLATE_ID = DEMO_TEMPLATE_ID;
+
 const state = {
   templates: [],
   animationPresets: ["clean-rise", "slide-fly", "soft-float"],
-  openTemplateCardId: ""
+  dirty: false
 };
 
 const renderState = {
   runId: null,
   outputView: "images",
   links: null,
-  workflow: null
+  workflow: null,
+  quickRender: false
 };
+
+function isQuickRenderEnabled() {
+  return $("quick-render")?.checked === true;
+}
+
+function buildQuickRenderContent(rawContent) {
+  const parsed = JSON.parse(rawContent);
+  if (!Array.isArray(parsed.cards) || parsed.cards.length === 0) {
+    throw new Error("Content must include at least one card for quick render");
+  }
+  return formatJson({ ...parsed, cards: [parsed.cards[0]] });
+}
+
+function isQuickRenderMappingSlot(slot) {
+  return /^card1\./i.test(slot) || /^cover(\.|$)/i.test(slot);
+}
+
+function buildQuickRenderMapping(mappingValue) {
+  const parsed =
+    typeof mappingValue === "string" ? JSON.parse(mappingValue) : { ...mappingValue };
+  const slots = Object.fromEntries(
+    Object.entries(parsed.slots || {}).filter(([slot]) => isQuickRenderMappingSlot(slot))
+  );
+  if (!Object.keys(slots).length) {
+    throw new Error("Quick render mapping has no card 1 slots");
+  }
+  return formatJson({ ...parsed, slots });
+}
+
+function buildRenderPayload(template, { quickRender }) {
+  const templateWorkflow = template.workflow || {};
+  const body = {
+    templateId: template.id,
+    mapping: formatJson(template.mappingExample),
+    content: contentSource.getValue(),
+    animationPreset: $("animation-preset").value,
+    workflow: templateWorkflow
+  };
+
+  if (!quickRender) return body;
+
+  return {
+    ...body,
+    pngOnly: true,
+    mapping: buildQuickRenderMapping(template.mappingExample),
+    content: buildQuickRenderContent(body.content),
+    workflow: {
+      ...templateWorkflow,
+      cardCount: 1,
+      splitVideos: false
+    }
+  };
+}
 
 const contentSource = createContentSource();
 
@@ -27,139 +92,6 @@ const $ = (id) => document.getElementById(id);
 
 function formatJson(value) {
   return JSON.stringify(value, null, 2);
-}
-
-function escapeHtml(value) {
-  return String(value)
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;");
-}
-
-function humanizeTemplateId(value) {
-  const raw = String(value || "").trim();
-  if (!raw) return "";
-  return raw
-    .replace(/^i-am-/, "")
-    .replace(/^am-/, "")
-    .replace(/[-_]+/g, " ")
-    .replace(/\s+/g, " ")
-    .trim()
-    .replace(/\b\w/g, (char) => char.toUpperCase());
-}
-
-function extractAssetPaths(value, bucket = new Set()) {
-  if (Array.isArray(value)) {
-    value.forEach((item) => extractAssetPaths(item, bucket));
-    return bucket;
-  }
-
-  if (!value || typeof value !== "object") {
-    if (
-      typeof value === "string" &&
-      /^templates\/.+\.(png|jpe?g|webp|gif|svg)$/i.test(value.trim())
-    ) {
-      bucket.add(value.trim());
-    }
-    return bucket;
-  }
-
-  Object.values(value).forEach((item) => extractAssetPaths(item, bucket));
-  return bucket;
-}
-
-function renderJsonWithLinks(value) {
-  const json = formatJson(value);
-  const assetRegex = /"((?:templates|content|assets)\/[^"]+\.(?:png|jpe?g|webp|gif|svg))"/gi;
-  let html = "";
-  let lastIndex = 0;
-
-  for (const match of json.matchAll(assetRegex)) {
-    const [fullMatch, assetPath] = match;
-    html += escapeHtml(json.slice(lastIndex, match.index));
-    html += `"<a href="/assets/${encodeURI(assetPath)}" target="_blank" rel="noreferrer">${escapeHtml(assetPath)}</a>"`;
-    lastIndex = match.index + fullMatch.length;
-  }
-
-  html += escapeHtml(json.slice(lastIndex));
-  return `<pre class="mvp-template-card-json">${html}</pre>`;
-}
-
-function readTemplateSummary(template) {
-  const content = template?.contentExample || {};
-  const cards = Array.isArray(content.cards) ? content.cards : [];
-  const title =
-    humanizeTemplateId(content.item) ||
-    humanizeTemplateId(template?.name) ||
-    template?.id ||
-    "Template";
-  const quotes = cards
-    .map((card) => (typeof card?.quote === "string" ? card.quote.trim() : ""))
-    .filter(Boolean);
-  const teaser =
-    quotes[0] ||
-    (typeof template?.readme === "string"
-      ? template.readme
-          .split("\n")
-          .map((line) => line.trim())
-          .find((line) => line && !line.startsWith("# "))
-      : "") ||
-    "Template content preview";
-  const chips = [];
-  const firstCard = cards[0] || {};
-  if (firstCard.titleAccent) chips.push(firstCard.titleAccent);
-  if (firstCard.label) chips.push(firstCard.label);
-  chips.push(`${cards.length || 0} cards`);
-  const assetCount = extractAssetPaths(content).size;
-  if (assetCount) chips.push(`${assetCount} images`);
-
-  return {
-    title,
-    teaser,
-    chips
-  };
-}
-
-function setOpenTemplateCard(templateId) {
-  state.openTemplateCardId = templateId || "";
-}
-
-function renderTemplateCards() {
-  const grid = $("template-cards-grid");
-  if (!grid) return;
-
-  if (!state.templates.length) {
-    grid.innerHTML = `<p class="mvp-template-cards-empty">No templates found.</p>`;
-    return;
-  }
-
-  grid.innerHTML = state.templates
-    .map((template) => {
-      const summary = readTemplateSummary(template);
-      const isOpen = template.id === state.openTemplateCardId;
-      return `
-        <article class="mvp-template-card${isOpen ? " is-open" : ""}" data-template-card="${template.id}">
-          <button type="button" class="mvp-template-card-toggle" data-template-card-toggle="${template.id}" aria-expanded="${isOpen ? "true" : "false"}">
-            <div class="mvp-template-card-headline">
-              <div>
-                <p class="mvp-template-card-kicker">${escapeHtml(template.name || template.id)}</p>
-                <h3>${escapeHtml(summary.title)}</h3>
-              </div>
-              <span class="mvp-template-card-state">${isOpen ? "Hide JSON" : "Show JSON"}</span>
-            </div>
-            <p class="mvp-template-card-teaser">${escapeHtml(summary.teaser)}</p>
-            <div class="mvp-template-card-chips">
-              ${summary.chips.map((chip) => `<span class="mvp-template-card-chip">${escapeHtml(chip)}</span>`).join("")}
-            </div>
-          </button>
-          <div class="mvp-template-card-body"${isOpen ? "" : " hidden"}>
-            ${renderJsonWithLinks(template.contentExample)}
-          </div>
-        </article>
-      `;
-    })
-    .join("");
 }
 
 function setStatus(message, tone = "neutral", details = []) {
@@ -170,8 +102,8 @@ function setStatus(message, tone = "neutral", details = []) {
 
 async function requestJson(url, options = {}) {
   const response = await fetch(url, {
-    headers: { "Content-Type": "application/json" },
-    ...options
+    ...options,
+    headers: { "Content-Type": "application/json", ...(options.headers || {}) }
   });
   const payload = await response.json().catch(() => ({}));
   if (!response.ok) {
@@ -183,29 +115,116 @@ async function requestJson(url, options = {}) {
   return payload;
 }
 
+async function requestFormJson(url, form) {
+  const response = await fetch(url, { method: "POST", body: form });
+  const payload = await response.json().catch(() => ({}));
+  if (!response.ok) {
+    throw new Error(payload.error || "Upload failed");
+  }
+  return payload;
+}
+
 function selectedTemplate() {
   const templateId = $("template-select").value;
   return state.templates.find((template) => template.id === templateId) || null;
 }
 
-function updateContentFileLabel(fileName) {
-  const label = $("content-file-label");
-  label.textContent = fileName
-    ? `Selected file: ${fileName}`
-    : "Using template default content.";
+function isPipelineDemoTemplate(template) {
+  return template?.id === DEMO_TEMPLATE_ID;
 }
 
-function applyContent(value, fileName = null) {
-  contentSource.setValue(value);
-  setStoredContentLabel(fileName);
-  updateContentFileLabel(fileName);
+function syncDemoStudioMode(template) {
+  const isDemo = isPipelineDemoTemplate(template);
+  document.body.classList.toggle("mvp-demo-studio", isDemo);
+
+  const banner = $("demo-banner");
+  if (banner) banner.hidden = !isDemo;
+
+  const presetField = $("animation-preset-field");
+  if (presetField) presetField.hidden = isDemo;
+
+  const saveBtn = $("save-content");
+  if (saveBtn) saveBtn.hidden = isDemo;
+
+  const fileLabel = $("content-file-label");
+  if (fileLabel) fileLabel.hidden = isDemo;
+
+  const details = $("studio-editor-details");
+  if (details) details.open = !isDemo;
 }
 
-function fillTemplateExamples(template) {
+function setDirty(dirty) {
+  state.dirty = dirty;
+  $("save-content").disabled = !dirty;
+  $("content-file-label").textContent = dirty
+    ? "Unsaved changes."
+    : "Using saved template content.";
+}
+
+function applyContent(content, label = null) {
+  contentSource.setValue(formatJson(content));
+  setStoredContentLabel(label);
+  refreshContentCardsEditor(contentSource, formatJson);
+}
+
+function useStoredContentForTemplate(template) {
+  return Boolean(template?.id && hasStoredContent() && getStoredTemplateId() === template.id);
+}
+
+function syncTemplateContext(template, payload = {}) {
   if (!template) return;
-  applyContent(formatJson(template.contentExample), null);
-  $("content-file").value = "";
+  const workflow = payload.workflow || template.workflow || {};
+  const assetPaths = payload.assetPaths || template.assetPaths || [];
+  setContentCardsWorkflow(workflow);
+  setContentCardsAssetPaths(assetPaths, template.id);
   setStoredTemplateId(template.id);
+  applyDemoTemplateDefaults(template);
+}
+
+function applyDemoTemplateDefaults(template) {
+  const isDemo = template?.id === DEMO_TEMPLATE_ID;
+  const demoBadge = $("template-demo-badge");
+  if (demoBadge) demoBadge.hidden = !isDemo;
+
+  const quickRenderEl = $("quick-render");
+  if (isDemo && quickRenderEl) {
+    quickRenderEl.checked = true;
+  }
+}
+
+function demoTemplateStatusMessage() {
+  return "Demo template — Quick render recommended";
+}
+
+async function loadTemplateContent(template) {
+  if (!template) return;
+
+  setStatus("Loading template content...", "loading");
+  const payload = await requestJson(`/api/templates/${encodeURIComponent(template.id)}/content`);
+
+  template.contentExample = payload.content;
+  template.mappingExample = payload.mappingExample || template.mappingExample || {};
+  template.workflow = payload.workflow || template.workflow || {};
+  template.assetPaths = payload.assetPaths || template.assetPaths || [];
+
+  const shouldUseStoredContent = useStoredContentForTemplate(template);
+  const storedLabel = getStoredContentLabel();
+  syncTemplateContext(template, payload);
+  if (shouldUseStoredContent) {
+    refreshContentCardsEditor(contentSource, formatJson);
+    $("content-file-label").textContent = storedLabel
+      ? `Imported file: ${storedLabel}`
+      : "Using browser session content.";
+    setDirty(Boolean(storedLabel));
+  } else {
+    applyContent(payload.content, null);
+    setDirty(false);
+  }
+  syncDemoStudioMode(template);
+  setStatus(
+    template.id === DEMO_TEMPLATE_ID ? demoTemplateStatusMessage() : "Ready",
+    "success"
+  );
 }
 
 function renderTemplateOptions(preferredTemplateId = "") {
@@ -215,16 +234,10 @@ function renderTemplateOptions(preferredTemplateId = "") {
         `<option value="${template.id}">${template.name || template.id}</option>`
     )
     .join("");
-  if (preferredTemplateId) {
+
+  if (preferredTemplateId && state.templates.some((item) => item.id === preferredTemplateId)) {
     $("template-select").value = preferredTemplateId;
   }
-  if (hasStoredContent()) {
-    updateContentFileLabel(getStoredContentLabel());
-  } else {
-    fillTemplateExamples(selectedTemplate());
-  }
-  setOpenTemplateCard(preferredTemplateId || selectedTemplate()?.id || "");
-  renderTemplateCards();
 }
 
 function renderPresetOptions() {
@@ -377,20 +390,27 @@ function setOutputView(view) {
   }
 }
 
-function showOutput(payload) {
+function showOutput(payload, { quickRender = false } = {}) {
   const links = payload.links || {};
   const workflow = payload.workflow || {};
 
   renderState.runId = payload.runId || null;
   renderState.links = links;
   renderState.workflow = workflow;
+  renderState.quickRender = quickRender;
 
   $("output-panel").hidden = false;
+  $("quick-render-note").hidden = !quickRender;
   $("props-preview").textContent = formatJson(payload.props || {});
 
   populateOutputMedia(links, workflow);
-  setOutputView(renderState.outputView);
+  setOutputView(quickRender ? "images" : renderState.outputView);
   setToolbarEnabled(Boolean(renderState.runId));
+
+  if (quickRender) {
+    $("btn-show-video").disabled = true;
+    $("btn-download-mp4").disabled = true;
+  }
 }
 
 async function loadTemplates(preferredTemplateId = "") {
@@ -404,16 +424,60 @@ async function loadTemplates(preferredTemplateId = "") {
   if (!state.templates.length) {
     setStatus("No templates found", "error");
     $("run-render").disabled = true;
+    $("save-content").disabled = true;
     return;
   }
 
-  setStatus("Ready", "success");
+  await loadTemplateContent(selectedTemplate());
 }
 
-async function readContentFile(fileInput) {
-  const file = fileInput.files?.[0];
-  if (!file) return;
-  applyContent(await file.text(), file.name);
+async function uploadCardImage(file) {
+  const template = selectedTemplate();
+  if (!template || !file) return null;
+
+  const form = new FormData();
+  form.append("files", file);
+
+  setStatus("Uploading image...", "loading");
+  const payload = await requestFormJson(
+    `/api/templates/${encodeURIComponent(template.id)}/assets/images`,
+    form
+  );
+  const uploaded = payload.uploaded?.[0];
+  const paths = payload.assets?.paths || [];
+  template.assetPaths = paths;
+  setContentCardsAssetPaths(paths, template.id);
+  setDirty(true);
+  setStatus("Image uploaded", "success");
+
+  return {
+    path: uploaded?.path || "",
+    assetPaths: paths
+  };
+}
+
+async function saveContent() {
+  const template = selectedTemplate();
+  if (!template) return;
+
+  $("save-content").disabled = true;
+  setStatus("Saving content...", "loading");
+
+  try {
+    const parsed = JSON.parse(contentSource.getValue());
+    const payload = await requestJson(`/api/templates/${encodeURIComponent(template.id)}/content`, {
+      method: "PATCH",
+      body: JSON.stringify({ content: parsed })
+    });
+
+    template.contentExample = payload.content;
+    applyContent(payload.content, null);
+    setDirty(false);
+    setStatus("Saved", "success");
+  } catch (error) {
+    setDirty(true);
+    setStatus(error.message, "error", error.details || []);
+  }
 }
 
 async function runRender() {
@@ -423,28 +487,31 @@ async function runRender() {
     return;
   }
 
+  const quickRender = isQuickRenderEnabled();
+
   $("run-render").disabled = true;
   $("output-panel").hidden = true;
+  $("quick-render-note").hidden = true;
   renderState.runId = null;
   renderState.links = null;
   renderState.workflow = null;
+  renderState.quickRender = false;
   renderState.outputView = "images";
   setToolbarEnabled(false);
-  setStatus("Rendering PNG and MP4...", "loading");
+  setStatus(
+    quickRender ? "Quick render: 1 card PNG..." : "Rendering PNG and MP4...",
+    "loading"
+  );
 
   try {
+    const requestBody = buildRenderPayload(template, { quickRender });
     const payload = await requestJson("/api/render", {
       method: "POST",
-      body: JSON.stringify({
-        templateId: template.id,
-        mapping: formatJson(template.mappingExample),
-        content: contentSource.getValue(),
-        animationPreset: $("animation-preset").value,
-        workflow: template.workflow || {}
-      })
+      body: JSON.stringify(requestBody)
     });
-    showOutput(payload);
-    setStatus(`Render complete: ${payload.runId}`, "success");
+    showOutput(payload, { quickRender });
+    const modeLabel = quickRender ? "Quick render complete" : "Render complete";
+    setStatus(`${modeLabel}: ${payload.runId}`, "success");
   } catch (error) {
     setStatus(error.message, "error", error.details || []);
   } finally {
@@ -454,29 +521,11 @@ async function runRender() {
 
 function wireEvents() {
   $("template-select").addEventListener("change", () => {
-    fillTemplateExamples(selectedTemplate());
-    setOpenTemplateCard($("template-select").value);
-    renderTemplateCards();
-    setStatus("Ready", "success");
+    loadTemplateContent(selectedTemplate()).catch((error) =>
+      setStatus(error.message, "error", error.details || [])
+    );
   });
-  $("content-file").addEventListener("change", (event) => readContentFile(event.target));
-  $("template-cards-grid").addEventListener("click", (event) => {
-    const toggle = event.target.closest("[data-template-card-toggle]");
-    if (!toggle) return;
-
-    const templateId = toggle.dataset.templateCardToggle;
-    const template = state.templates.find((item) => item.id === templateId);
-    if (!template) return;
-
-    if ($("template-select").value !== templateId) {
-      $("template-select").value = templateId;
-      fillTemplateExamples(template);
-    }
-
-    setOpenTemplateCard(state.openTemplateCardId === templateId ? "" : templateId);
-    renderTemplateCards();
-    setStatus("Ready", "success");
-  });
+  $("save-content").addEventListener("click", saveContent);
   $("run-render").addEventListener("click", runRender);
   $("btn-show-images").addEventListener("click", () => setOutputView("images"));
   $("btn-show-video").addEventListener("click", () => setOutputView("video"));
@@ -487,7 +536,15 @@ function wireEvents() {
 
 renderMvpNav("render");
 wireEvents();
+setupContentCardsEditor(contentSource, formatJson);
+setContentCardsChangeHandler(() => setDirty(true));
+setContentCardsUploadHandler(uploadCardImage);
 setToolbarEnabled(false);
-loadTemplates(getStoredTemplateId() || "").catch((error) => {
+const preferredTemplateId =
+  new URLSearchParams(window.location.search).get("template") ||
+  getStoredTemplateId() ||
+  DEFAULT_TEMPLATE_ID;
+
+loadTemplates(preferredTemplateId).catch((error) => {
   setStatus(error.message, "error", error.details || []);
 });

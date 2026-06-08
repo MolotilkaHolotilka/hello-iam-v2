@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Import — HELLOIAM.AM</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;700&family=Instrument+Serif:ital@0;1&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body class="mvp-body">
+    <main class="mvp-shell">
+      <header class="mvp-header mvp-header-with-nav">
+        <div>
+          <p class="mvp-kicker">HELLOIAM.AM</p>
+          <h1>Import</h1>
+        </div>
+        <nav id="mvp-top-nav" class="mvp-top-nav" aria-label="Main navigation"></nav>
+      </header>
+
+      <p class="mvp-import-demo-note">
+        For demo use Render page with Pipeline Demo template.
+      </p>
+
+      <section class="mvp-controls" aria-label="Import template selection">
+        <label class="mvp-field">
+          <span>Template</span>
+          <select id="import-template-select"></select>
+        </label>
+        <a id="open-studio-link" class="mvp-secondary-link" href="/">Open Studio</a>
+      </section>
+
+      <section class="mvp-import-grid">
+        <article class="mvp-panel mvp-import-panel">
+          <div class="mvp-panel-head">
+            <div>
+              <h2>JSON file</h2>
+              <p id="json-import-label" class="mvp-content-file-label">No file selected.</p>
+            </div>
+            <input id="json-content-file" type="file" accept=".json,application/json" />
+          </div>
+        </article>
+
+        <article class="mvp-panel mvp-import-panel">
+          <div class="mvp-panel-head">
+            <div>
+              <h2>Image path</h2>
+              <p class="mvp-content-file-label">Applies to imported browser content.</p>
+            </div>
+          </div>
+          <div class="mvp-import-path-grid">
+            <label class="mvp-field">
+              <span>Card</span>
+              <input id="path-card-index" type="number" min="1" max="7" value="1" />
+            </label>
+            <label class="mvp-field">
+              <span>Field</span>
+              <select id="path-field-key">
+                <option value="image">image</option>
+                <option value="backgroundImage">backgroundImage</option>
+              </select>
+            </label>
+            <label class="mvp-field mvp-field-grow">
+              <span>Path</span>
+              <input
+                id="manual-image-path"
+                type="text"
+                placeholder="templates/i-am-lavash-deep-dive/images/example.png"
+                spellcheck="false"
+              />
+            </label>
+          </div>
+          <button id="apply-image-path" class="mvp-secondary-button" type="button">
+            Apply Path
+          </button>
+        </article>
+
+        <article class="mvp-panel mvp-import-panel mvp-import-css-panel">
+          <div class="mvp-panel-head">
+            <div>
+              <h2>Import CSS</h2>
+              <p class="mvp-content-file-label">Maps CSS into content cards.</p>
+            </div>
+          </div>
+          <div class="mvp-import-css-fields">
+            <label class="mvp-field">
+              <span>Template ID</span>
+              <input id="css-template-id" type="text" placeholder="i-am-lavash-deep-dive" />
+            </label>
+            <label class="mvp-field">
+              <span>CSS</span>
+              <textarea id="css-source" rows="12" spellcheck="false"></textarea>
+            </label>
+          </div>
+          <button id="run-css-import" class="mvp-run-button" type="button">
+            Import CSS
+          </button>
+          <div id="css-import-warnings" class="mvp-import-alerts" hidden></div>
+        </article>
+      </section>
+
+      <section id="import-status" class="mvp-status-box" data-tone="neutral"></section>
+    </main>
+
+    <script type="module" src="/import-app.js"></script>
+  </body>
+</html>
