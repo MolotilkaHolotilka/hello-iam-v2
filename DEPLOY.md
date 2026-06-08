@@ -24,8 +24,8 @@ sudo usermod -aG docker $USER
 # перелогинься по SSH
 
 # 2. Код
-git clone https://github.com/MolotilkaHolotilka/helloiam-content-os.git
-cd helloiam-content-os
+git clone https://github.com/MolotilkaHolotilka/hello-iam-v2.git
+cd hello-iam-v2
 
 # 3. (Опционально) порт
 cp .env.example .env
@@ -49,6 +49,72 @@ docker compose logs -f app
 Открыть: `http://IP_СЕРВЕРА:4242`
 
 Первая сборка ~5–10 мин (Chromium внутри образа).
+
+---
+
+## Не открывается снаружи (Hostinger)
+
+**Важно:** hello-iam слушает порт **4242**, не 8082 (8082 — это другой проект, units-gen).
+
+### Вариант A — открыть порт напрямую (проще всего)
+
+В `docker-compose.yaml` должно быть **`ports`**, не `expose`:
+
+```yaml
+services:
+  app:
+    ports:
+      - "4242:4242"
+```
+
+Уже так в репозитории. На сервере:
+
+```bash
+docker compose down
+docker compose up -d --build
+```
+
+1. **Hostinger hPanel → VPS → Firewall** — открыть TCP **4242** (или закрыть 4242 снаружи и использовать Traefik ниже).
+2. Открыть: `http://187.124.164.63:4242`
+
+Проверка на сервере:
+
+```bash
+curl -s http://127.0.0.1:4242/api/health
+```
+
+### Вариант B — Traefik + домен (без открытого 4242)
+
+Если на VPS уже крутится Traefik:
+
+```bash
+docker compose -f docker-compose.traefik.yaml up -d --build
+```
+
+В `.env`:
+
+```env
+TRAEFIK_HOST=твой-домен.com
+HELLOIAM_SUBDOMAIN=helloiam
+BASIC_AUTH_USER=team
+BASIC_AUTH_HASH=$$apr1$$...
+```
+
+Сайт: `https://helloiam.твой-домен.com`
+
+### Убрать старый Caddy
+
+Старый Caddy от units-gen больше не нужен:
+
+```bash
+docker ps -a | grep -i caddy
+# остановить старый стек (путь к папке, где был units-gen):
+cd /path/to/old-project && docker compose down
+# или вручную:
+docker stop caddy 2>/dev/null; docker rm caddy 2>/dev/null
+```
+
+Не смешивай `expose: 8082` из старого compose с hello-iam — это разные проекты и порты.
 
 ---
 

@@ -1,0 +1,39 @@
+# Traefik на том же VPS (без Caddy).
+# Запуск: docker compose -f docker-compose.traefik.yaml up -d --build
+#
+# В .env задай:
+#   TRAEFIK_HOST=your-domain.com
+#   HELLOIAM_SUBDOMAIN=helloiam   → helloiam.your-domain.com
+# Опционально Basic Auth:
+#   BASIC_AUTH_USER=team
+#   BASIC_AUTH_HASH=$$apr1$$...   (htpasswd -nb user pass, $ → $$)
+
+services:
+  app:
+    build: .
+    restart: unless-stopped
+    expose:
+      - "4242"
+    environment:
+      PORT: 4242
+      NODE_ENV: production
+    volumes:
+      - ./content:/app/content
+      - ./apps/helloiam-remotion/public:/app/apps/helloiam-remotion/public
+    shm_size: "2gb"
+    mem_limit: 4g
+    networks:
+      - traefik
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=traefik
+      - traefik.http.routers.helloiam.rule=Host(`${HELLOIAM_SUBDOMAIN:-helloiam}.${TRAEFIK_HOST}`)
+      - traefik.http.routers.helloiam.entrypoints=websecure
+      - traefik.http.routers.helloiam.tls.certresolver=letsencrypt
+      - traefik.http.services.helloiam.loadbalancer.server.port=4242
+      - traefik.http.routers.helloiam.middlewares=helloiam-auth
+      - traefik.http.middlewares.helloiam-auth.basicauth.users=${BASIC_AUTH_USER:-team}:${BASIC_AUTH_HASH}
+
+networks:
+  traefik:
+    external: true
