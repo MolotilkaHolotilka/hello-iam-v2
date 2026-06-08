@@ -1,0 +1,9 @@
+:root {
+  --hello-bg: #fff7e8;
+  --hello-ink: #1f140a;
+  --hello-primary: #d61e23;
+}
+
+* {
+  box-sizing: border-box;
+}

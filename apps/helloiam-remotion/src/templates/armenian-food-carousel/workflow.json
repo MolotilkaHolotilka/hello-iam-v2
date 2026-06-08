@@ -1,0 +1,8 @@
+{
+  "id": "armenian-food-carousel",
+  "templateId": "armenian-food-carousel",
+  "name": "Armenian Cards Carousel",
+  "format": "carousel",
+  "cardCount": 6,
+  "exportName": "Template"
+}

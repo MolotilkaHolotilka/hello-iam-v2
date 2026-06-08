@@ -1,0 +1,20 @@
+# Hostinger VPS — docker compose up -d --build
+# UI: http://SERVER_IP:4242  (put nginx/Caddy with HTTPS + Basic Auth in front)
+
+services:
+  app:
+    build: .
+    restart: unless-stopped
+    ports:
+      - "${PORT:-4242}:4242"
+    environment:
+      PORT: 4242
+      NODE_ENV: production
+    volumes:
+      # Persist posts, tracker, renders, fal artifacts (if used).
+      - ./content:/app/content
+      # Persist slide photos, emoji, template uploads.
+      - ./apps/helloiam-remotion/public:/app/apps/helloiam-remotion/public
+    # Chromium needs shared memory; default 64m often breaks Remotion.
+    shm_size: "2gb"
+    mem_limit: 4g

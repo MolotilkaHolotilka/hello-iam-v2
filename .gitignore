@@ -1,0 +1,62 @@
+# Dependencies
+node_modules/
+
+# Local secrets
+.env
+apps/post-ops-ui/.env
+
+# OS
+.DS_Store
+desktop.ini
+Thumbs.db
+
+# Media (place locally — not in repo)
+*.png
+*.jpg
+*.jpeg
+*.webp
+*.gif
+*.mp4
+*.webm
+*.mov
+*.avi
+*.zip
+
+# Office / design inputs
+*.docx
+*.pen
+
+# Content data (markdown briefs, artifacts, runs)
+content/posts/
+content/storyboards/
+content/runs/
+content/tracker/
+content/video-manifests/
+content/artifacts/**
+!content/artifacts/.gitkeep
+# keep schema templates (small, not post data)
+!content/templates/
+!content/templates/**
+
+# Designer / production asset archives
+Stas Assets for Posts/
+_matsun_slide/
+_matsun_slide.zip
+Slide Text.docx
+
+# Production briefs dropped into public/
+*_PRODUCTION_FILE.md
+apps/helloiam-remotion/public/generated/
+
+# Per-post and per-template media (upload via UI locally)
+apps/helloiam-remotion/public/posts/
+apps/helloiam-remotion/public/templates/**/images/
+apps/helloiam-remotion/public/templates/**/stickers/
+
+# Render outputs
+content/artifacts/renders/
+apps/helloiam-remotion/out/
+render-all-results.json
+render-deep-dive-trio-results.json
+render-payload.json
+render-result.json

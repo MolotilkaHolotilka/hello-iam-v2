@@ -1,0 +1,175 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://helloiam.am/schemas/post-record.schema.json",
+  "title": "PostRecord",
+  "type": "object",
+  "required": [
+    "postId",
+    "title",
+    "rubric",
+    "category",
+    "format",
+    "status",
+    "linkedStoryPackIds",
+    "paths",
+    "approvals",
+    "readyChecklist",
+    "updatedAt"
+  ],
+  "properties": {
+    "postId": {
+      "type": "string",
+      "pattern": "^[A-Z0-9]{2,6}$"
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1
+    },
+    "rubric": {
+      "type": "string",
+      "minLength": 1
+    },
+    "category": {
+      "type": "string",
+      "minLength": 1
+    },
+    "format": {
+      "type": "string",
+      "minLength": 1
+    },
+    "priority": {
+      "type": "string",
+      "enum": [
+        "core",
+        "support",
+        "test",
+        "unknown"
+      ]
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "planned",
+        "writing",
+        "storyboarding",
+        "prompting",
+        "asset-ready",
+        "editing",
+        "ready"
+      ]
+    },
+    "linkedStoryPackIds": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "paths": {
+      "type": "object",
+      "required": [
+        "post"
+      ],
+      "properties": {
+        "post": {
+          "type": "string"
+        },
+        "storyboard": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "storyPack": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "manifest": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "approvals": {
+      "type": "object",
+      "required": [
+        "brief",
+        "storyboard",
+        "storyPack",
+        "manifest"
+      ],
+      "properties": {
+        "brief": {
+          "type": "string",
+          "enum": [
+            "draft",
+            "review",
+            "approved"
+          ]
+        },
+        "storyboard": {
+          "type": "string",
+          "enum": [
+            "draft",
+            "review",
+            "approved"
+          ]
+        },
+        "storyPack": {
+          "type": "string",
+          "enum": [
+            "draft",
+            "review",
+            "approved"
+          ]
+        },
+        "manifest": {
+          "type": "string",
+          "enum": [
+            "draft",
+            "review",
+            "approved"
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "readyChecklist": {
+      "type": "object",
+      "required": [
+        "copyApproved",
+        "coverApproved",
+        "promptsReady",
+        "storyPackReady",
+        "captionAndCtaLocked"
+      ],
+      "properties": {
+        "copyApproved": {
+          "type": "boolean"
+        },
+        "coverApproved": {
+          "type": "boolean"
+        },
+        "promptsReady": {
+          "type": "boolean"
+        },
+        "storyPackReady": {
+          "type": "boolean"
+        },
+        "captionAndCtaLocked": {
+          "type": "boolean"
+        }
+      },
+      "additionalProperties": false
+    },
+    "updatedAt": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "additionalProperties": false
+}

@@ -1,0 +1,96 @@
+{
+  "project": "HELLOIAM.AM — launch post video template",
+  "post_id": "000",
+  "title": "WORKING TITLE",
+  "format": {
+    "width": 1080,
+    "height": 1350,
+    "fps": 30,
+    "duration_sec": 24
+  },
+  "social_handle": "@helloiamam",
+  "intent": {
+    "rubric": "Deep Dive",
+    "what_the_audience_meets": "one cultural object / ritual / atmosphere",
+    "mood": "quiet intelligent observation"
+  },
+  "scenes": [
+    {
+      "id": 1,
+      "name": "Hook",
+      "duration_sec": 3.0,
+      "time_in": "00:00:00.000",
+      "time_out": "00:00:03.000",
+      "visual": "hero object or scene",
+      "text": "SHORT OPENING LINE",
+      "sound": "ambient + first music cue"
+    },
+    {
+      "id": 2,
+      "name": "Closer look",
+      "duration_sec": 4.0,
+      "time_in": "00:00:03.000",
+      "time_out": "00:00:07.000",
+      "visual": "texture / detail / hand / surface",
+      "text": "DETAIL LINE",
+      "sound": "texture-led audio"
+    },
+    {
+      "id": 3,
+      "name": "Context",
+      "duration_sec": 5.0,
+      "time_in": "00:00:07.000",
+      "time_out": "00:00:12.000",
+      "visual": "wider cultural or spatial context",
+      "text": "WHY IT MATTERS",
+      "sound": "music rises slightly"
+    },
+    {
+      "id": 4,
+      "name": "Human use",
+      "duration_sec": 5.0,
+      "time_in": "00:00:12.000",
+      "time_out": "00:00:17.000",
+      "visual": "human interaction without presenter energy",
+      "text": "RITUAL / HABIT / FEELING",
+      "sound": "voice, room tone, or human sound"
+    },
+    {
+      "id": 5,
+      "name": "Aftertaste",
+      "duration_sec": 4.0,
+      "time_in": "00:00:17.000",
+      "time_out": "00:00:21.000",
+      "visual": "quiet closing shot",
+      "text": "FINAL LINE",
+      "sound": "resolve and soften"
+    },
+    {
+      "id": 6,
+      "name": "CTA",
+      "duration_sec": 3.0,
+      "time_in": "00:00:21.000",
+      "time_out": "00:00:24.000",
+      "visual": "cover or branded outro frame",
+      "text": "FOLLOW / SAVE / NEXT POST",
+      "sound": "clean ending"
+    }
+  ],
+  "footage_rules": {
+    "cut_interval_sec": [0.8, 2.0],
+    "max_clip_sec": 3.0,
+    "shot_mix": ["macro", "medium", "wide"],
+    "notes": [
+      "Keep visual language consistent with the feed cover logic.",
+      "Avoid tourist postcard imagery and presenter-led framing.",
+      "Let one object or one atmosphere lead the edit."
+    ]
+  },
+  "assets_needed": [
+    "cover frame",
+    "detail texture shot",
+    "context shot",
+    "human interaction shot",
+    "closing shot"
+  ]
+}

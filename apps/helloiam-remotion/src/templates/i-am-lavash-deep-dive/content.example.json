@@ -1,0 +1,83 @@
+{
+  "item": "i-am-lavash",
+  "cards": [
+    {
+      "title": "HELLO, I AM",
+      "titleAccent": "LAVASH",
+      "label": "AM FOOD",
+      "image": "templates/i-am-lavash-deep-dive/images/100_1.png",
+      "background": "#D9DDE0",
+      "titleColor": "#0F0F10",
+      "accentColor": "#D61E23",
+      "labelColor": "#000000",
+      "introLayout": "lavash"
+    },
+    {
+      "title": "HELLO, I AM",
+      "titleAccent": "LAVASH",
+      "image": "templates/i-am-lavash-deep-dive/images/100_2.png",
+      "quote": "Lavash is a traditional Armenian flatbread. Thin, soft when fresh, made from simple dough: flour, water, and salt. It looks modest, but on the Armenian table it carries almost everything.",
+      "label": "AM FOOD",
+      "background": "#D9DDE0",
+      "quoteColor": "#D61E23",
+      "titleColor": "#0F0F10",
+      "accentColor": "#D61E23",
+      "labelColor": "#000000"
+    },
+    {
+      "title": "HELLO, I AM",
+      "titleAccent": "LAVASH",
+      "image": "templates/i-am-lavash-deep-dive/images/100_3.png",
+      "quote": "Traditionally, lavash is baked in a tonir — a deep clay oven. The dough is stretched by hand, placed against the hot wall, and baked in seconds. Fire, clay, hands, bread.",
+      "label": "AM FOOD",
+      "background": "#D9DDE0",
+      "quoteColor": "#D61E23",
+      "titleColor": "#0F0F10",
+      "accentColor": "#D61E23",
+      "labelColor": "#000000"
+    },
+    {
+      "title": "HELLO, I AM",
+      "titleAccent": "LAVASH",
+      "image": "templates/i-am-lavash-deep-dive/images/100_4.png",
+      "quote": "You do not only eat lavash beside food. You use it with food. Wrap herbs, cheese, grilled meat, vegetables, or whatever is on the table. Lavash is bread, plate, and gesture at once.",
+      "label": "AM FOOD",
+      "background": "#D9DDE0",
+      "quoteColor": "#D61E23",
+      "titleColor": "#0F0F10",
+      "accentColor": "#D61E23",
+      "labelColor": "#000000"
+    },
+    {
+      "title": "HELLO, I AM",
+      "titleAccent": "LAVASH",
+      "image": "templates/i-am-lavash-deep-dive/images/100_5.png",
+      "quote": "One of its most practical qualities is memory. Lavash can be dried and stored for a long time. Add a little water, cover it, and it becomes soft again.",
+      "label": "AM FOOD",
+      "background": "#D9DDE0",
+      "quoteColor": "#D61E23",
+      "titleColor": "#0F0F10",
+      "accentColor": "#D61E23",
+      "labelColor": "#000000"
+    },
+    {
+      "title": "HELLO, I AM",
+      "titleAccent": "LAVASH",
+      "image": "templates/i-am-lavash-deep-dive/images/100_6.png",
+      "quote": "In Armenia, lavash is part of daily life and family ritual. It appears at simple breakfasts, long dinners, village ovens, celebrations, and quiet tables where nobody explains it — they just pass it to you.",
+      "label": "AM FOOD",
+      "background": "#D9DDE0",
+      "quoteColor": "#D61E23",
+      "titleColor": "#0F0F10",
+      "accentColor": "#D61E23",
+      "labelColor": "#000000"
+    },
+    {
+      "brandLeft": "helloiam",
+      "brandRight": "am",
+      "image": "templates/i-am-lavash-deep-dive/stickers/100_emoji.png",
+      "background": "#D9DDE0",
+      "brandColor": "#420000"
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "id": "i-am-culture-intro",
+  "templateId": "i-am-culture-intro",
+  "name": "I Am Culture Intro",
+  "format": "carousel-portrait",
+  "cardCount": 7,
+  "width": 1080,
+  "height": 1350,
+  "fps": 30,
+  "durationPerCardFrames": 90,
+  "composition": "TemplateRenderPortrait",
+  "splitVideos": true,
+  "exportName": "Template"
+}

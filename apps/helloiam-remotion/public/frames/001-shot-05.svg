@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1920" viewBox="0 0 1080 1920">
+  <defs>
+    <linearGradient id="g5" x1="0.5" y1="0" x2="0.5" y2="1">
+      <stop offset="0%" stop-color="#fff7e8"/>
+      <stop offset="100%" stop-color="#e8ddcf"/>
+    </linearGradient>
+  </defs>
+  <rect width="1080" height="1920" fill="url(#g5)"/>
+  <rect x="100" y="520" width="880" height="780" fill="#f0e8dc" rx="16" opacity="0.9"/>
+  <g fill="#1f140a" opacity="0.08" font-family="system-ui" font-size="14">
+    <text x="160" y="700">food</text>
+    <text x="420" y="880">streets</text>
+    <text x="720" y="720">rituals</text>
+    <text x="260" y="1080">objects</text>
+    <text x="600" y="1180">sounds</text>
+  </g>
+</svg>

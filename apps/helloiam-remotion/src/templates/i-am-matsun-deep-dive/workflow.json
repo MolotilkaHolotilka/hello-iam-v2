@@ -1,0 +1,14 @@
+{
+  "id": "i-am-matsun-deep-dive",
+  "templateId": "i-am-matsun-deep-dive",
+  "name": "I Am Matsun Deep Dive",
+  "format": "carousel-portrait",
+  "cardCount": 7,
+  "width": 1080,
+  "height": 1350,
+  "fps": 30,
+  "durationPerCardFrames": 210,
+  "composition": "TemplateRenderPortrait",
+  "splitVideos": true,
+  "exportName": "Template"
+}

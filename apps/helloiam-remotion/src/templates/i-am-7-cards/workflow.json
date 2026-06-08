@@ -1,0 +1,14 @@
+{
+  "id": "i-am-7-cards",
+  "templateId": "i-am-7-cards",
+  "name": "I Am — 7 Cards Carousel",
+  "format": "carousel-portrait",
+  "cardCount": 7,
+  "width": 1080,
+  "height": 1350,
+  "fps": 30,
+  "durationPerCardFrames": 90,
+  "composition": "TemplateRenderPortrait",
+  "splitVideos": true,
+  "exportName": "Template"
+}

@@ -1,0 +1,16 @@
+{
+  "item": "deep-dive-theme-blue",
+  "cards": [
+    {
+      "title": "HELLO, I AM",
+      "titleAccent": "BLUE",
+      "image": "templates/i-am-lavash-deep-dive/images/100_2.png",
+      "quote": "Quote slide theme: background #4A7BFF, quote #FFC53A, header and label #FFFFFF (Figma 124).",
+      "label": "AM FOOD",
+      "background": "#4A7BFF",
+      "quoteColor": "#FFC53A",
+      "titleColor": "#FFFFFF",
+      "labelColor": "#FFFFFF"
+    }
+  ]
+}

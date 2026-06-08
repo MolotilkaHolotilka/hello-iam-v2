@@ -1,0 +1,34 @@
+node_modules
+apps/post-ops-ui/node_modules
+apps/helloiam-remotion/node_modules
+.git
+.gitignore
+.env
+apps/post-ops-ui/.env
+.DS_Store
+**/.DS_Store
+# Docs not needed at runtime (keep content/templates/*.md in the image).
+ONBOARDING.md
+README.md
+CLAUDE.md
+SESSION_*.md
+DEPLOY.md
+apps/post-ops-ui/src/**/*.md
+!content/templates/**
+hiam-smm-launch.pen
+render-all-results.json
+render-deep-dive-trio-results.json
+render-payload.json
+render-result.json
+apps/helloiam-remotion/out
+
+# Content & media are mounted as volumes — not baked into the image.
+content/posts
+content/storyboards
+content/runs
+content/tracker
+content/artifacts
+content/video-manifests
+apps/helloiam-remotion/public/generated
+apps/helloiam-remotion/public/posts
+apps/helloiam-remotion/public/templates

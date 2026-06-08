@@ -1,0 +1,61 @@
+{
+  "item": "i-am-food",
+  "cards": [
+    {
+      "title": "HELLO,\nI AM",
+      "titleAccent": "FOOD",
+      "label": "AM FOOD",
+      "image": "templates/i-am-food-intro/images/010_1.png",
+      "background": "#d61e23",
+      "titleColor": "#ffffff",
+      "accentColor": "#ffce1f"
+    },
+    {
+      "title": "I AM _ FOOD",
+      "image": "templates/i-am-food-intro/images/010_2.png",
+      "quote": "Start with bread. Lavash is foundation, gesture, and memory.",
+      "label": "AM FOOD",
+      "background": "#d9dde0",
+      "quoteColor": "#d61e23"
+    },
+    {
+      "title": "I AM _ FOOD",
+      "image": "templates/i-am-food-intro/images/010_3.png",
+      "quote": "Then dairy and calm. Matsun sits quietly at the center of the table.",
+      "label": "AM FOOD",
+      "background": "#d9dde0",
+      "quoteColor": "#d61e23"
+    },
+    {
+      "title": "I AM _ FOOD",
+      "image": "templates/i-am-food-intro/images/010_4.png",
+      "quote": "Then shared dishes. Dolma, herbs, and plates made for passing.",
+      "label": "AM FOOD",
+      "background": "#d9dde0",
+      "quoteColor": "#d61e23"
+    },
+    {
+      "title": "I AM _ FOOD",
+      "image": "templates/i-am-food-intro/images/010_5.png",
+      "quote": "Then fruit and drink. Apricot and wine carry season, table, and time.",
+      "label": "AM FOOD",
+      "background": "#d9dde0",
+      "quoteColor": "#d61e23"
+    },
+    {
+      "title": "I AM _ FOOD",
+      "image": "templates/i-am-food-intro/images/010_6.png",
+      "quote": "This is not a menu. It is a food memory map.",
+      "label": "AM FOOD",
+      "background": "#d9dde0",
+      "quoteColor": "#d61e23"
+    },
+    {
+      "brandLeft": "helloiam",
+      "brandRight": "am",
+      "image": "templates/i-am-food-intro/stickers/010_emoji.png",
+      "background": "#d9dde0",
+      "brandColor": "#420000"
+    }
+  ]
+}

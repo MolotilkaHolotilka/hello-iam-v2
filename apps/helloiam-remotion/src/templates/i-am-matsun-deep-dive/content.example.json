@@ -1,0 +1,83 @@
+{
+  "item": "i-am-matsun",
+  "cards": [
+    {
+      "title": "HELLO,\nI AM",
+      "titleAccent": "MATSUN",
+      "label": "AM FOOD",
+      "image": "templates/i-am-matsun-deep-dive/images/101_1.png",
+      "background": "#0F0F10",
+      "titleColor": "#FFFFFF",
+      "accentColor": "#FFCE50",
+      "labelColor": "#FFFFFF",
+      "introLayout": "matsun"
+    },
+    {
+      "title": "HELLO, I AM",
+      "titleAccent": "MATSUN",
+      "image": "templates/i-am-matsun-deep-dive/images/101_2.png",
+      "quote": "Matsun is Armenia's traditional fermented milk. It is close to yogurt, but usually thicker, tangier, and more deeply connected to the everyday table.",
+      "label": "AM FOOD",
+      "background": "#0F0F10",
+      "quoteColor": "#FFCE50",
+      "titleColor": "#FFFFFF",
+      "accentColor": "#FFCE50",
+      "labelColor": "#FFFFFF"
+    },
+    {
+      "title": "HELLO, I AM",
+      "titleAccent": "MATSUN",
+      "image": "templates/i-am-matsun-deep-dive/images/101_3.png",
+      "quote": "At its simplest, matsun is milk transformed by fermentation. No decoration, no performance. Just something cool, sour, soft, and alive.",
+      "label": "AM FOOD",
+      "background": "#0F0F10",
+      "quoteColor": "#FFCE50",
+      "titleColor": "#FFFFFF",
+      "accentColor": "#FFCE50",
+      "labelColor": "#FFFFFF"
+    },
+    {
+      "title": "HELLO, I AM",
+      "titleAccent": "MATSUN",
+      "image": "templates/i-am-matsun-deep-dive/images/101_4.png",
+      "quote": "It appears next to lavash, herbs, cucumbers, and almost anything warm or heavy. Matsun balances the table - fresh against rich, sour against salty.",
+      "label": "AM FOOD",
+      "background": "#0F0F10",
+      "quoteColor": "#FFCE50",
+      "titleColor": "#FFFFFF",
+      "accentColor": "#FFCE50",
+      "labelColor": "#FFFFFF"
+    },
+    {
+      "title": "HELLO, I AM",
+      "titleAccent": "MATSUN",
+      "image": "templates/i-am-matsun-deep-dive/images/101_5.png",
+      "quote": "Sometimes it becomes a sauce. With garlic, herbs, salt, or a little oil, matsun turns into the quiet thing that makes dolma, soups, and vegetables feel complete.",
+      "label": "AM FOOD",
+      "background": "#0F0F10",
+      "quoteColor": "#FFCE50",
+      "titleColor": "#FFFFFF",
+      "accentColor": "#FFCE50",
+      "labelColor": "#FFFFFF"
+    },
+    {
+      "title": "HELLO, I AM",
+      "titleAccent": "MATSUN",
+      "image": "templates/i-am-matsun-deep-dive/images/101_6.png",
+      "quote": "It can also become tan - a lighter drink made with matsun and water. Cold, simple, slightly sour. The kind of thing people drink without needing to explain why.",
+      "label": "AM FOOD",
+      "background": "#0F0F10",
+      "quoteColor": "#FFCE50",
+      "titleColor": "#FFFFFF",
+      "accentColor": "#FFCE50",
+      "labelColor": "#FFFFFF"
+    },
+    {
+      "brandLeft": "helloiam",
+      "brandRight": "am",
+      "image": "templates/i-am-matsun-deep-dive/stickers/101_emoji.png",
+      "background": "#0F0F10",
+      "brandColor": "#FFFFFF"
+    }
+  ]
+}

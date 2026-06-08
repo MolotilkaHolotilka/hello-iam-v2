@@ -1,0 +1,83 @@
+{
+  "item": "i-am-dolma",
+  "cards": [
+    {
+      "title": "HELLO, I AM",
+      "titleAccent": "DOLMA",
+      "label": "AM FOOD",
+      "image": "templates/i-am-dolma-deep-dive/images/102_1.png",
+      "background": "#4A7BFF",
+      "titleColor": "#FFFFFF",
+      "accentColor": "#FFC53A",
+      "labelColor": "#000000",
+      "introLayout": "dolma"
+    },
+    {
+      "title": "HELLO, I AM",
+      "titleAccent": "DOLMA",
+      "image": "templates/i-am-dolma-deep-dive/images/102_2.png",
+      "quote": "Dolma starts as a pile of grape leaves and filling. The dish only exists after every piece has been rolled by hand.",
+      "label": "AM FOOD",
+      "background": "#4A7BFF",
+      "quoteColor": "#FFC53A",
+      "titleColor": "#FFFFFF",
+      "accentColor": "#FFC53A",
+      "labelColor": "#FFFFFF"
+    },
+    {
+      "title": "HELLO, I AM",
+      "titleAccent": "DOLMA",
+      "image": "templates/i-am-dolma-deep-dive/images/102_3.png",
+      "quote": "In most Armenian kitchens, dolma is not made alone. It is made in groups, with each person rolling at their own pace.",
+      "label": "AM FOOD",
+      "background": "#4A7BFF",
+      "quoteColor": "#FFC53A",
+      "titleColor": "#FFFFFF",
+      "accentColor": "#FFC53A",
+      "labelColor": "#FFFFFF"
+    },
+    {
+      "title": "HELLO, I AM",
+      "titleAccent": "DOLMA",
+      "image": "templates/i-am-dolma-deep-dive/images/102_4.png",
+      "quote": "There is no definitive dolma. Grape leaves, cabbage leaves, or stuffed peppers and aubergines — all of them count.",
+      "label": "AM FOOD",
+      "background": "#4A7BFF",
+      "quoteColor": "#FFC53A",
+      "titleColor": "#FFFFFF",
+      "accentColor": "#FFC53A",
+      "labelColor": "#FFFFFF"
+    },
+    {
+      "title": "HELLO, I AM",
+      "titleAccent": "DOLMA",
+      "image": "templates/i-am-dolma-deep-dive/images/102_5.png",
+      "quote": "Dolma is almost always served with matsun. The cool dairy against the warm filling is not a suggestion. It is the point.",
+      "label": "AM FOOD",
+      "background": "#4A7BFF",
+      "quoteColor": "#FFC53A",
+      "titleColor": "#FFFFFF",
+      "accentColor": "#FFC53A",
+      "labelColor": "#FFFFFF"
+    },
+    {
+      "title": "HELLO, I AM",
+      "titleAccent": "DOLMA",
+      "image": "templates/i-am-dolma-deep-dive/images/102_6.png",
+      "quote": "After the table is cleared, the grape leaves and bowl and cloth tell you exactly what happened here.",
+      "label": "AM FOOD",
+      "background": "#4A7BFF",
+      "quoteColor": "#FFC53A",
+      "titleColor": "#FFFFFF",
+      "accentColor": "#FFC53A",
+      "labelColor": "#FFFFFF"
+    },
+    {
+      "brandLeft": "helloiam",
+      "brandRight": "am",
+      "image": "templates/i-am-dolma-deep-dive/stickers/102_emoji.png",
+      "background": "#4A7BFF",
+      "brandColor": "#FFFFFF"
+    }
+  ]
+}

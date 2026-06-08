@@ -1,0 +1,83 @@
+{
+  "item": "i-am-khachkar",
+  "cards": [
+    {
+      "title": "HELLO, I AM",
+      "titleAccent": "KHACHKAR",
+      "label": "AM CULTURE",
+      "image": "templates/i-am-khachkar-deep-dive/images/khachkar_1.png",
+      "background": "#D9DDE0",
+      "titleColor": "#0F0F10",
+      "accentColor": "#D61E23",
+      "labelColor": "#000000",
+      "introLayout": "lavash"
+    },
+    {
+      "title": "HELLO, I AM",
+      "titleAccent": "KHACHKAR",
+      "image": "templates/i-am-khachkar-deep-dive/images/khachkar_2.png",
+      "quote": "A khachkar is an Armenian cross-stone. At first, it looks like a carved stone with a cross. But in Armenia, it is much more than decoration — it is memory, prayer, and identity shaped by hand.",
+      "label": "AM CULTURE",
+      "background": "#D9DDE0",
+      "quoteColor": "#D61E23",
+      "titleColor": "#0F0F10",
+      "accentColor": "#D61E23",
+      "labelColor": "#000000"
+    },
+    {
+      "title": "HELLO, I AM",
+      "titleAccent": "KHACHKAR",
+      "image": "templates/i-am-khachkar-deep-dive/images/khachkar_3.png",
+      "quote": "The word khachkar literally means \"cross-stone\": khach means cross, and kar means stone. Most khachkars are vertical stone slabs with a cross at the centre and detailed ornaments around it.",
+      "label": "AM CULTURE",
+      "background": "#D9DDE0",
+      "quoteColor": "#D61E23",
+      "titleColor": "#0F0F10",
+      "accentColor": "#D61E23",
+      "labelColor": "#000000"
+    },
+    {
+      "title": "HELLO, I AM",
+      "titleAccent": "KHACHKAR",
+      "image": "templates/i-am-khachkar-deep-dive/images/khachkar_4.png",
+      "quote": "No two khachkars are exactly the same. The patterns can include vines, leaves, circles, rosettes, and lace-like stone carving. Each one carries the hand of the master who made it.",
+      "label": "AM CULTURE",
+      "background": "#D9DDE0",
+      "quoteColor": "#D61E23",
+      "titleColor": "#0F0F10",
+      "accentColor": "#D61E23",
+      "labelColor": "#000000"
+    },
+    {
+      "title": "HELLO, I AM",
+      "titleAccent": "KHACHKAR",
+      "image": "templates/i-am-khachkar-deep-dive/images/khachkar_5.png",
+      "quote": "Khachkars can be found near churches, monasteries, cemeteries, roads, and old settlements. Some mark memory. Some mark gratitude. Some simply stand as signs of Armenian presence.",
+      "label": "AM CULTURE",
+      "background": "#D9DDE0",
+      "quoteColor": "#D61E23",
+      "titleColor": "#0F0F10",
+      "accentColor": "#D61E23",
+      "labelColor": "#000000"
+    },
+    {
+      "title": "HELLO, I AM",
+      "titleAccent": "KHACHKAR",
+      "image": "templates/i-am-khachkar-deep-dive/images/khachkar_6.png",
+      "quote": "In 2010, Armenian khachkar art was inscribed by UNESCO as part of the Intangible Cultural Heritage of Humanity. It is not only a stone object — it is a living craft and a cultural language.",
+      "label": "AM CULTURE",
+      "background": "#D9DDE0",
+      "quoteColor": "#D61E23",
+      "titleColor": "#0F0F10",
+      "accentColor": "#D61E23",
+      "labelColor": "#000000"
+    },
+    {
+      "brandLeft": "helloiam",
+      "brandRight": "am",
+      "image": "templates/i-am-khachkar-deep-dive/stickers/khachkar_emoji.png",
+      "background": "#D9DDE0",
+      "brandColor": "#420000"
+    }
+  ]
+}

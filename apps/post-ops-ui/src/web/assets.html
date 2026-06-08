@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Template Assets — HELLOIAM.AM</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body class="mvp-body">
+    <main class="mvp-shell">
+      <header class="mvp-header mvp-header-with-nav">
+        <div>
+          <p class="mvp-kicker">HELLOIAM.AM</p>
+          <h1>Template assets</h1>
+        </div>
+        <nav id="mvp-top-nav" class="mvp-top-nav" aria-label="Main navigation"></nav>
+      </header>
+
+      <section class="mvp-controls mvp-assets-controls" aria-label="Template selection">
+        <label class="mvp-field mvp-field-grow">
+          <span>Template</span>
+          <select id="assets-template-select"></select>
+        </label>
+        <p id="assets-template-hint" class="mvp-cards-hint"></p>
+      </section>
+
+      <section class="mvp-assets-grid">
+        <article class="mvp-panel mvp-assets-panel">
+          <div class="mvp-panel-head">
+            <h2>Images</h2>
+            <label class="mvp-upload-button">
+              Upload
+              <input
+                id="upload-images"
+                type="file"
+                accept="image/png,image/jpeg,image/webp,image/gif,image/svg+xml"
+                multiple
+                hidden
+              />
+            </label>
+          </div>
+          <p class="mvp-assets-path-hint" id="images-path-hint"></p>
+          <ul id="images-list" class="mvp-assets-list"></ul>
+        </article>
+
+        <article class="mvp-panel mvp-assets-panel">
+          <div class="mvp-panel-head">
+            <h2>Stickers</h2>
+            <label class="mvp-upload-button">
+              Upload
+              <input
+                id="upload-stickers"
+                type="file"
+                accept="image/png,image/jpeg,image/webp,image/gif,image/svg+xml"
+                multiple
+                hidden
+              />
+            </label>
+          </div>
+          <p class="mvp-assets-path-hint" id="stickers-path-hint"></p>
+          <ul id="stickers-list" class="mvp-assets-list"></ul>
+        </article>
+      </section>
+
+      <section id="assets-status" class="mvp-status-box" data-tone="neutral"></section>
+    </main>
+
+    <script type="module" src="/assets-app.js"></script>
+  </body>
+</html>

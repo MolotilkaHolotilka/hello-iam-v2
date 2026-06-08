@@ -1,0 +1,362 @@
+{
+  "version": "2.11",
+  "children": [
+    {
+      "type": "frame",
+      "id": "ZNFGT",
+      "x": 964.0764331210191,
+      "y": -375,
+      "name": "Instagram post - 75",
+      "clip": true,
+      "width": 1080,
+      "height": 1350,
+      "fill": "#d9dde0ff",
+      "stroke": {
+        "align": "inside",
+        "thickness": 1
+      },
+      "layout": "none",
+      "children": [
+        {
+          "type": "text",
+          "id": "J50fqA",
+          "x": 50,
+          "y": 587,
+          "name": "Thin armenian bread baked in stone oven",
+          "enabled": false,
+          "fill": "#1e1e1eff",
+          "textGrowth": "fixed-width",
+          "width": 460,
+          "content": "Thin armenian bread baked in stone oven",
+          "lineHeight": 0.6875,
+          "fontFamily": "Instrument Serif",
+          "fontSize": 64,
+          "fontWeight": "normal",
+          "fontStyle": "italic"
+        },
+        {
+          "type": "group",
+          "id": "r6mLCi",
+          "x": 196,
+          "y": 585,
+          "name": "Group 3",
+          "children": [
+            {
+              "type": "rectangle",
+              "id": "VrJQO",
+              "x": 382,
+              "y": 0,
+              "name": "image 44",
+              "fill": [
+                {
+                  "type": "image",
+                  "enabled": false,
+                  "url": "",
+                  "mode": "fill"
+                },
+                {
+                  "type": "image",
+                  "enabled": true,
+                  "url": "",
+                  "mode": "fill"
+                }
+              ],
+              "width": 180,
+              "height": 180,
+              "stroke": {
+                "align": "inside",
+                "thickness": 1
+              }
+            },
+            {
+              "type": "group",
+              "id": "S8xK8G",
+              "x": 0,
+              "y": 47,
+              "name": "Group 1",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "VJae3",
+                  "x": 0,
+                  "y": 0,
+                  "name": "helloiam am",
+                  "fill": "#420000ff",
+                  "content": "helloiam        am",
+                  "lineHeight": 0.9583333333333334,
+                  "textAlign": "center",
+                  "fontFamily": "Instrument Sans",
+                  "fontSize": 96,
+                  "fontWeight": "700"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "VJhqt",
+      "x": -1275.9235668789809,
+      "y": -375,
+      "name": "Instagram post - 70",
+      "clip": true,
+      "width": 1080,
+      "height": 1350,
+      "fill": "#d61e23ff",
+      "stroke": {
+        "align": "inside",
+        "thickness": 1
+      },
+      "layout": "none",
+      "children": [
+        {
+          "type": "text",
+          "id": "WtyP1",
+          "x": 40,
+          "y": 40,
+          "name": "Hello, I Am GREEN PLATE",
+          "fill": "#ffffffff",
+          "content": "Hello, \nI Am \nGREEN\nPLATE",
+          "lineHeight": 0.9512195121951219,
+          "fontFamily": "Instrument Sans",
+          "fontSize": 164,
+          "fontWeight": "700"
+        },
+        {
+          "type": "text",
+          "id": "L6QAmj",
+          "x": 50,
+          "y": 587,
+          "name": "Thin armenian bread baked in stone oven",
+          "enabled": false,
+          "fill": "#1e1e1eff",
+          "textGrowth": "fixed-width",
+          "width": 460,
+          "content": "Thin armenian bread baked in stone oven",
+          "lineHeight": 0.6875,
+          "fontFamily": "Instrument Serif",
+          "fontSize": 64,
+          "fontWeight": "normal",
+          "fontStyle": "italic"
+        },
+        {
+          "type": "rectangle",
+          "id": "mOwVB",
+          "x": -95,
+          "y": 242,
+          "name": "image 68",
+          "fill": [
+            {
+              "type": "image",
+              "enabled": false,
+              "url": "",
+              "mode": "fill"
+            },
+            {
+              "type": "image",
+              "enabled": true,
+              "url": "",
+              "mode": "fill"
+            }
+          ],
+          "width": 1698,
+          "height": 1698,
+          "stroke": {
+            "align": "inside",
+            "thickness": 1
+          }
+        },
+        {
+          "type": "text",
+          "id": "jvTH5",
+          "x": 40,
+          "y": 1285,
+          "name": "AM FOOD",
+          "fill": "#000000ff",
+          "content": "AM FOOD",
+          "textAlignVertical": "bottom",
+          "fontFamily": "Instrument Sans",
+          "fontSize": 26,
+          "fontWeight": "700"
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "NNyw3",
+      "x": -155.92356687898086,
+      "y": -375,
+      "name": "Instagram post - 71",
+      "clip": true,
+      "width": 1080,
+      "height": 1350,
+      "fill": "#d9dde0ff",
+      "stroke": {
+        "align": "inside",
+        "thickness": 1
+      },
+      "layout": "none",
+      "children": [
+        {
+          "type": "rectangle",
+          "id": "R7LTd",
+          "x": 28,
+          "y": 235,
+          "name": "image 43",
+          "fill": {
+            "type": "image",
+            "enabled": true,
+            "url": "",
+            "mode": "stretch"
+          },
+          "width": 1024,
+          "height": 645,
+          "stroke": {
+            "align": "inside",
+            "thickness": 1
+          }
+        },
+        {
+          "type": "text",
+          "id": "FVC9d",
+          "x": 50,
+          "y": 587,
+          "name": "Thin armenian bread baked in stone oven",
+          "enabled": false,
+          "fill": "#1e1e1eff",
+          "textGrowth": "fixed-width",
+          "width": 460,
+          "content": "Thin armenian bread baked in stone oven",
+          "lineHeight": 0.6875,
+          "fontFamily": "Instrument Serif",
+          "fontSize": 64,
+          "fontWeight": "normal",
+          "fontStyle": "italic"
+        },
+        {
+          "type": "text",
+          "id": "SqBjm",
+          "x": 40,
+          "y": 928,
+          "name": "Start with bread. Lavash is foundation, gesture, and memory.",
+          "fill": "#d61e23ff",
+          "textGrowth": "fixed-width-height",
+          "width": 830,
+          "height": 212,
+          "content": "Start with bread. Lavash is foundation, gesture, and memory.",
+          "lineHeight": 0.875,
+          "fontFamily": "Instrument Serif",
+          "fontSize": 64,
+          "fontWeight": "normal"
+        },
+        {
+          "type": "text",
+          "id": "q0Hern",
+          "x": 40,
+          "y": 1285,
+          "name": "AM FOOD",
+          "fill": "#000000ff",
+          "content": "AM FOOD",
+          "textAlignVertical": "bottom",
+          "fontFamily": "Instrument Sans",
+          "fontSize": 26,
+          "fontWeight": "700"
+        },
+        {
+          "type": "text",
+          "id": "iHpwj",
+          "x": 40,
+          "y": 40,
+          "name": "Hello, I Am GREEN PLATE",
+          "fill": "#0f0f10ff",
+          "content": "Hello, I Am \nGREEN PLATE",
+          "fontFamily": "Instrument Sans",
+          "fontSize": 44,
+          "fontWeight": "700"
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "QB4vb",
+      "x": -1276,
+      "y": -3414,
+      "name": "Instagram post - 39",
+      "clip": true,
+      "width": 1080,
+      "height": 1350,
+      "fill": "#d9dde0ff",
+      "stroke": {
+        "align": "inside",
+        "thickness": 1
+      },
+      "layout": "none"
+    },
+    {
+      "type": "frame",
+      "id": "SYfXO",
+      "x": 3204,
+      "y": -3414,
+      "name": "Instagram post - 45",
+      "clip": true,
+      "width": 1080,
+      "height": 1350,
+      "fill": "#0f0f10ff",
+      "stroke": {
+        "align": "inside",
+        "thickness": 1
+      },
+      "layout": "none"
+    },
+    {
+      "type": "frame",
+      "id": "H5KW9",
+      "x": 964,
+      "y": -3414,
+      "name": "Instagram post - 41",
+      "clip": true,
+      "width": 1080,
+      "height": 1350,
+      "fill": "#d61e23ff",
+      "stroke": {
+        "align": "inside",
+        "thickness": 1
+      },
+      "layout": "none"
+    },
+    {
+      "type": "frame",
+      "id": "oPBft",
+      "x": 2084,
+      "y": -3414,
+      "name": "Instagram post - 44",
+      "clip": true,
+      "width": 1080,
+      "height": 1350,
+      "fill": "#4a7bffff",
+      "stroke": {
+        "align": "inside",
+        "thickness": 1
+      },
+      "layout": "none"
+    },
+    {
+      "type": "frame",
+      "id": "O2ivsM",
+      "x": -156,
+      "y": -3414,
+      "name": "Instagram post - 40",
+      "clip": true,
+      "width": 1080,
+      "height": 1350,
+      "fill": "#ffc53aff",
+      "stroke": {
+        "align": "inside",
+        "thickness": 1
+      },
+      "layout": "none"
+    }
+  ]
+}

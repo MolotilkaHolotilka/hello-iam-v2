@@ -1,0 +1,14 @@
+{
+  "id": "i-am-wine-deep-dive",
+  "templateId": "i-am-wine-deep-dive",
+  "name": "I Am Wine Deep Dive",
+  "format": "carousel-portrait",
+  "cardCount": 7,
+  "width": 1080,
+  "height": 1350,
+  "fps": 30,
+  "durationPerCardFrames": 210,
+  "composition": "TemplateRenderPortrait",
+  "splitVideos": true,
+  "exportName": "Template"
+}

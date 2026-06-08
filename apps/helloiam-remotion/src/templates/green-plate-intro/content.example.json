@@ -1,0 +1,29 @@
+{
+  "item": "green-plate",
+  "cards": [
+    {
+      "title": "Hello,\nI Am",
+      "titleAccent": "GREEN\nPLATE",
+      "label": "AM FOOD",
+      "image": "templates/green-plate-intro/stickers/emoji-greens.png",
+      "background": "#d61e23",
+      "titleColor": "#ffffff",
+      "accentColor": "#ffce1f"
+    },
+    {
+      "title": "Hello, I Am\nGREEN PLATE",
+      "image": "templates/green-plate-intro/images/lavash.png",
+      "quote": "Start with bread. Lavash is foundation, gesture, and memory.",
+      "label": "AM FOOD",
+      "background": "#d9dde0",
+      "quoteColor": "#d61e23"
+    },
+    {
+      "brandLeft": "helloiam",
+      "brandRight": "am",
+      "image": "templates/green-plate-intro/stickers/emoji-greens.png",
+      "background": "#d9dde0",
+      "brandColor": "#420000"
+    }
+  ]
+}

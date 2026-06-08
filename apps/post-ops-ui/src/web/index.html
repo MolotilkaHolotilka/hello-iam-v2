@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Remotion Render MVP</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;700&family=Instrument+Serif:ital@0;1&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body class="mvp-body">
+    <main class="mvp-shell">
+      <header class="mvp-header mvp-header-with-nav">
+        <div>
+          <p class="mvp-kicker">HELLOIAM.AM</p>
+          <h1>Remotion Render MVP</h1>
+        </div>
+        <nav id="mvp-top-nav" class="mvp-top-nav" aria-label="Main navigation"></nav>
+      </header>
+
+      <section class="mvp-controls" aria-label="Render controls">
+        <label class="mvp-field">
+          <span>Template</span>
+          <select id="template-select"></select>
+        </label>
+
+        <label class="mvp-field">
+          <span>Animation preset</span>
+          <select id="animation-preset"></select>
+        </label>
+
+        <button id="run-render" class="mvp-run-button" type="button">
+          Run Render
+        </button>
+      </section>
+
+      <details class="mvp-jsx-workflow">
+        <summary>Import workflow</summary>
+        <div class="mvp-jsx-grid">
+          <label class="mvp-field">
+            <span>Template id</span>
+            <input id="jsx-template-id" type="text" placeholder="my-template" />
+          </label>
+          <label class="mvp-field">
+            <span>Name</span>
+            <input id="jsx-template-name" type="text" placeholder="My JSX Template" />
+          </label>
+          <label class="mvp-field">
+            <span>Card count</span>
+            <input id="workflow-card-count" type="number" min="1" placeholder="auto" />
+          </label>
+          <label class="mvp-field">
+            <span>Export name</span>
+            <input id="jsx-export-name" type="text" placeholder="Template or default" />
+          </label>
+          <label class="mvp-field mvp-jsx-file">
+            <span>JSX file</span>
+            <input id="jsx-file" type="file" accept=".jsx,.tsx,.js,.ts,text/plain" />
+          </label>
+        </div>
+        <textarea
+          id="jsx-source"
+          class="mvp-jsx-source"
+          spellcheck="false"
+          placeholder="Paste ready template.tsx with export default / export const Template. Mapping and content are taken from the JSON boxes below."
+        ></textarea>
+        <button id="add-jsx-workflow" class="mvp-secondary-button" type="button">
+          Import Workflow
+        </button>
+      </details>
+
+      <section class="mvp-json-grid" aria-label="JSON inputs">
+        <article class="mvp-panel">
+          <div class="mvp-panel-head">
+            <h2>Mapping JSON</h2>
+            <input id="mapping-file" type="file" accept=".json,application/json" />
+          </div>
+          <textarea id="mapping-json" spellcheck="false"></textarea>
+        </article>
+
+        <article class="mvp-panel">
+          <div class="mvp-panel-head">
+            <h2>Content JSON</h2>
+            <input id="content-file" type="file" accept=".json,application/json" />
+          </div>
+          <textarea id="content-json" spellcheck="false"></textarea>
+        </article>
+      </section>
+
+      <section
+        id="content-cards-section"
+        class="mvp-cards-section"
+        aria-label="Content cards editor"
+        hidden
+      >
+        <div class="mvp-cards-section-head">
+          <h2>Content cards</h2>
+          <p id="content-cards-hint" class="mvp-cards-hint">
+            Edit fields here or in Content JSON — changes sync in real time.
+          </p>
+        </div>
+        <p id="content-cards-error" class="mvp-cards-error" hidden></p>
+        <div id="content-root-fields" class="mvp-cards-root-fields"></div>
+        <div
+          id="content-cards-carousel-shell"
+          class="mvp-cards-carousel-shell"
+          hidden
+          aria-label="Card preview carousel"
+        >
+          <button
+            type="button"
+            class="mvp-carousel-arrow mvp-carousel-arrow-side"
+            data-carousel-nav="prev"
+            aria-label="Previous card"
+          >
+            ←
+          </button>
+          <div class="mvp-cards-carousel-viewport" id="content-cards-carousel-viewport">
+            <div class="mvp-cards-carousel-track" id="content-cards-carousel-track"></div>
+          </div>
+          <button
+            type="button"
+            class="mvp-carousel-arrow mvp-carousel-arrow-side"
+            data-carousel-nav="next"
+            aria-label="Next card"
+          >
+            →
+          </button>
+        </div>
+        <div class="mvp-cards-nav" id="content-cards-nav"></div>
+        <article id="content-card-panel" class="mvp-card-panel"></article>
+      </section>
+
+      <section id="status-box" class="mvp-status-box" data-tone="neutral"></section>
+
+      <section id="output-panel" class="mvp-output" hidden>
+        <div class="mvp-output-links">
+          <a id="png-link" href="#" target="_blank" rel="noreferrer">PNG</a>
+          <a id="mp4-link" href="#" target="_blank" rel="noreferrer">MP4</a>
+          <a id="props-link" href="#" target="_blank" rel="noreferrer">props.json</a>
+        </div>
+        <div id="png-card-links" class="mvp-card-links"></div>
+        <div id="mp4-card-links" class="mvp-card-links"></div>
+        <div id="mp4-card-grid" class="mvp-mp4-grid" hidden></div>
+        <div class="mvp-preview-grid">
+          <img id="png-preview" alt="PNG preview" hidden />
+          <video id="mp4-preview" controls hidden></video>
+        </div>
+        <pre id="props-preview" class="mvp-props-preview"></pre>
+      </section>
+    </main>
+
+    <script type="module" src="/mvp-app.js"></script>
+  </body>
+</html>

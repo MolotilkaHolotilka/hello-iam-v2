@@ -1,0 +1,11 @@
+{
+  "name": "helloiam-launch-workspace",
+  "private": true,
+  "scripts": {
+    "index": "npm --prefix apps/post-ops-ui run index",
+    "start": "npm --prefix apps/post-ops-ui run start",
+    "dev": "npm --prefix apps/post-ops-ui run dev",
+    "remotion": "npm --prefix apps/helloiam-remotion run dev",
+    "remotion:render": "npm --prefix apps/helloiam-remotion run render"
+  }
+}

@@ -1,0 +1,92 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://helloiam.am/schemas/generation-run.schema.json",
+  "title": "GenerationRun",
+  "type": "object",
+  "required": [
+    "runId",
+    "postId",
+    "step",
+    "inputRefs",
+    "model",
+    "promptHash",
+    "outputRefs",
+    "status",
+    "error",
+    "startedAt",
+    "finishedAt",
+    "dryRun"
+  ],
+  "properties": {
+    "runId": {
+      "type": "string"
+    },
+    "postId": {
+      "type": "string"
+    },
+    "step": {
+      "type": "string",
+      "enum": [
+        "brief-to-copy",
+        "copy-to-storyboard",
+        "storyboard-to-manifest"
+      ]
+    },
+    "inputRefs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "type",
+          "path"
+        ],
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "path": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "model": {
+      "type": "string"
+    },
+    "promptHash": {
+      "type": "string"
+    },
+    "outputRefs": {
+      "type": "array",
+      "items": {
+        "$ref": "./artifact-ref.schema.json"
+      }
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "success",
+        "failed"
+      ]
+    },
+    "error": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "startedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "finishedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "dryRun": {
+      "type": "boolean"
+    }
+  },
+  "additionalProperties": false
+}

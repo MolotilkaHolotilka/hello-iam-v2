@@ -1,0 +1,28 @@
+{
+  "templateId": "armenian-food-carousel",
+  "format": "carousel",
+  "slots": {
+    "card1.title": "cards[0].title",
+    "card1.subtitle": "cards[0].subtitle",
+    "card1.backgroundImage": "cards[0].backgroundImage",
+    "card1.image": "cards[0].image",
+    "card2.title": "cards[1].title",
+    "card2.text": "cards[1].text",
+    "card2.image": "cards[1].image",
+    "card2.counter": "cards[1].counter",
+    "card3.title": "cards[2].title",
+    "card3.backgroundImage": "cards[2].backgroundImage",
+    "card3.counter": "cards[2].counter",
+    "card4.title": "cards[3].title",
+    "card4.text": "cards[3].text",
+    "card4.image": "cards[3].image",
+    "card4.counter": "cards[3].counter",
+    "card5.title": "cards[4].title",
+    "card5.backgroundImage": "cards[4].backgroundImage",
+    "card5.counter": "cards[4].counter",
+    "card6.brandLeft": "cards[5].brandLeft",
+    "card6.brandRight": "cards[5].brandRight",
+    "card6.image": "cards[5].image",
+    "card6.subtitle": "cards[5].subtitle"
+  }
+}

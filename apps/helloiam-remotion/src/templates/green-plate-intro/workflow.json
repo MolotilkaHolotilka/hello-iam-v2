@@ -1,0 +1,14 @@
+{
+  "id": "green-plate-intro",
+  "templateId": "green-plate-intro",
+  "name": "Green Plate Intro",
+  "format": "carousel-portrait",
+  "cardCount": 3,
+  "width": 1080,
+  "height": 1350,
+  "fps": 30,
+  "durationPerCardFrames": 90,
+  "composition": "TemplateRenderPortrait",
+  "splitVideos": true,
+  "exportName": "Template"
+}
