@@ -267,14 +267,139 @@ textarea {
   opacity: 0.64;
 }
 
-.mvp-content-file {
-  margin-top: 18px;
-}
-
 .mvp-content-file-label {
   color: #5a6b5e;
   font-size: 13px;
   margin: 0;
+}
+
+.mvp-template-panel {
+  margin-top: 18px;
+}
+
+.mvp-template-cards-grid {
+  display: grid;
+  gap: 12px;
+  margin-top: 14px;
+}
+
+.mvp-template-cards-empty {
+  color: #4b5547;
+  font-size: 13px;
+  margin: 0;
+}
+
+.mvp-template-card {
+  background: #fbfcfa;
+  border: 1px solid #dbe3d8;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.mvp-template-card.is-open {
+  border-color: #18201a;
+  box-shadow: 0 10px 28px rgba(24, 32, 26, 0.12);
+}
+
+.mvp-template-card-toggle {
+  background: transparent;
+  border: 0;
+  color: inherit;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 14px;
+  text-align: left;
+  width: 100%;
+}
+
+.mvp-template-card-headline {
+  align-items: start;
+  display: flex;
+  gap: 12px;
+  justify-content: space-between;
+}
+
+.mvp-template-card-kicker {
+  color: #5a6b5e;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  margin: 0 0 4px;
+  text-transform: uppercase;
+}
+
+.mvp-template-card-toggle h3 {
+  font-size: 18px;
+  line-height: 1;
+  margin: 0;
+}
+
+.mvp-template-card-state {
+  background: #eaf0e7;
+  border: 1px solid #ccd5c9;
+  border-radius: 999px;
+  color: #18201a;
+  flex-shrink: 0;
+  font-size: 11px;
+  font-weight: 800;
+  padding: 7px 10px;
+  white-space: nowrap;
+}
+
+.mvp-template-card-teaser {
+  color: #344138;
+  font-size: 13px;
+  line-height: 1.45;
+  margin: 0;
+}
+
+.mvp-template-card-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.mvp-template-card-chip {
+  background: #f5f6f2;
+  border: 1px solid #cbd6c8;
+  border-radius: 999px;
+  color: #18201a;
+  font-size: 11px;
+  font-weight: 800;
+  padding: 6px 9px;
+}
+
+.mvp-template-card-body {
+  border-top: 1px solid #e3e9e0;
+  padding: 14px;
+}
+
+.mvp-template-card-json {
+  background: #ffffff;
+  border: 1px solid #cbd6c8;
+  border-radius: 7px;
+  color: #18201a;
+  font-family:
+    "JetBrains Mono",
+    "SFMono-Regular",
+    Consolas,
+    monospace;
+  font-size: 12px;
+  line-height: 1.55;
+  margin: 0;
+  overflow: auto;
+  padding: 12px;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.mvp-template-card-json a {
+  color: #14623d;
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 2px;
 }
 
 .mvp-cards-section {
