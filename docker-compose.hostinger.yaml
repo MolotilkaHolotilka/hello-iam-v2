@@ -1,0 +1,31 @@
+# Hostinger VPS + Traefik (рекомендуется).
+# Порт 4242 снаружи часто закрыт firewall — используй HTTPS через Traefik.
+#
+# Запуск: docker compose -f docker-compose.hostinger.yaml up -d --build
+#
+# URL: https://${COMPOSE_PROJECT_NAME}.${TRAEFIK_HOST}
+# Пример: https://hello-iam-v3.srv1681126.hstgr.cloud
+
+services:
+  app:
+    build: .
+    restart: unless-stopped
+    expose:
+      - "4242"
+    environment:
+      HOST: 0.0.0.0
+      PORT: 4242
+      NODE_ENV: production
+    volumes:
+      - ./content:/app/content
+      - ./apps/helloiam-remotion/public:/app/apps/helloiam-remotion/public
+    shm_size: "2gb"
+    mem_limit: 4g
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}.rule=Host(`${COMPOSE_PROJECT_NAME}.${TRAEFIK_HOST}`)
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}.entrypoints=websecure
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}.tls.certresolver=letsencrypt
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}.middlewares=${COMPOSE_PROJECT_NAME}-auth
+      - traefik.http.services.${COMPOSE_PROJECT_NAME}.loadbalancer.server.port=4242
+      - traefik.http.middlewares.${COMPOSE_PROJECT_NAME}-auth.basicauth.users=${BASIC_AUTH_USER}:${BASIC_AUTH_HASH}
