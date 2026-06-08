@@ -1,5 +1,6 @@
 import { spawn } from "node:child_process";
 import { randomUUID } from "node:crypto";
+import os from "node:os";
 import { existsSync } from "node:fs";
 import { mkdir, readdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
@@ -37,20 +38,24 @@ const COMPOSITION_DURATIONS = {
   TemplateRenderPortrait: 630
 };
 const REMOTION_CONCURRENCY_DEFAULT = 6;
-const PARALLEL_MAX_CAP = 6;
 const REMOTION_PARALLEL_STILLS_DEFAULT = 4;
 const REMOTION_PARALLEL_RENDERS_DEFAULT = 3;
 
+function getAvailableCpuCount() {
+  return Math.max(1, os.cpus().length);
+}
+
 function getParallelLimit(envKey, defaultValue) {
+  const cpuCount = getAvailableCpuCount();
   const env = process.env[envKey];
   if (env !== undefined && env !== "") {
     const parsed = Number.parseInt(env, 10);
     if (Number.isFinite(parsed) && parsed > 0) {
-      return Math.min(parsed, PARALLEL_MAX_CAP);
+      return Math.min(parsed, cpuCount);
     }
   }
 
-  return Math.min(defaultValue, PARALLEL_MAX_CAP);
+  return Math.min(defaultValue, cpuCount);
 }
 
 function getParallelStills() {
@@ -83,15 +88,16 @@ async function runInParallelPool(items, limit, worker) {
 }
 
 function getRenderConcurrency() {
+  const cpuCount = getAvailableCpuCount();
   const env = process.env.REMOTION_CONCURRENCY;
   if (env !== undefined && env !== "") {
     const parsed = Number.parseInt(env, 10);
     if (Number.isFinite(parsed) && parsed > 0) {
-      return parsed;
+      return Math.min(parsed, cpuCount);
     }
   }
 
-  return REMOTION_CONCURRENCY_DEFAULT;
+  return Math.min(REMOTION_CONCURRENCY_DEFAULT, cpuCount);
 }
 
 function withRenderConcurrency(args) {
@@ -329,10 +335,12 @@ export async function renderTemplate(payload) {
   await writeFile(propsPath, `${JSON.stringify(resolved.props, null, 2)}\n`, "utf8");
 
   const segmentFrames = Math.max(1, Math.floor(compositionDuration / cardCount));
+  const cpuCount = getAvailableCpuCount();
   const parallelStills = getParallelStills();
   const parallelRenders = getParallelRenders();
+  const renderConcurrency = getRenderConcurrency();
   console.log(
-    `[remotion-render] parallel stills=${parallelStills} renders=${parallelRenders}`
+    `[remotion-render] cpus=${cpuCount} concurrency=${renderConcurrency} parallelStills=${parallelStills} parallelRenders=${parallelRenders}`
   );
 
   await runInParallelPool(pngPaths, parallelStills, async (pngOutPath, index) => {
@@ -355,13 +363,6 @@ export async function renderTemplate(payload) {
     );
   });
   await writeFile(pngPath, await readFile(pngPaths[0]));
-
-  if (!pngOnly) {
-    const renderConcurrency = getRenderConcurrency();
-    console.log(
-      `[remotion-render] starting video render (concurrency=${renderConcurrency})`
-    );
-  }
 
   if (!pngOnly && splitVideos) {
     await runInParallelPool(
