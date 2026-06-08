@@ -34,12 +34,15 @@
         </label>
       </section>
 
-      <article class="mvp-panel mvp-content-file" aria-label="Content JSON">
+      <article class="mvp-panel mvp-template-panel" aria-label="Template cards">
         <div class="mvp-panel-head">
-          <h2>Content JSON</h2>
+          <div>
+            <h2>Template cards</h2>
+            <p id="content-file-label" class="mvp-content-file-label">Using template default content.</p>
+          </div>
           <input id="content-file" type="file" accept=".json,application/json" />
         </div>
-        <p id="content-file-label" class="mvp-content-file-label">Using template default content.</p>
+        <div id="template-cards-grid" class="mvp-template-cards-grid"></div>
       </article>
 
       <div class="mvp-run-row">
@@ -51,14 +54,47 @@
       <section id="status-box" class="mvp-status-box" data-tone="neutral"></section>
 
       <section id="output-panel" class="mvp-output" hidden>
-        <div class="mvp-output-links">
-          <a id="png-link" href="#" target="_blank" rel="noreferrer">PNG</a>
-          <a id="mp4-link" href="#" target="_blank" rel="noreferrer">MP4</a>
-          <a id="props-link" href="#" target="_blank" rel="noreferrer">props.json</a>
+        <div class="mvp-output-toolbar" role="toolbar" aria-label="Output view and downloads">
+          <div class="mvp-output-toolbar-start">
+            <div class="mvp-output-toolbar-toggles" role="group" aria-label="Preview type">
+              <button
+                id="btn-show-images"
+                type="button"
+                class="mvp-output-toolbar-btn mvp-output-toolbar-toggle mvp-output-toolbar-toggle--active"
+              >
+                Show Images
+              </button>
+              <button
+                id="btn-show-video"
+                type="button"
+                class="mvp-output-toolbar-btn mvp-output-toolbar-toggle"
+              >
+                Show Video
+              </button>
+            </div>
+            <button
+              id="btn-download-png"
+              type="button"
+              class="mvp-output-toolbar-btn mvp-output-toolbar-download"
+            >
+              Download PNG
+            </button>
+            <button
+              id="btn-download-mp4"
+              type="button"
+              class="mvp-output-toolbar-btn mvp-output-toolbar-download mvp-hidden"
+            >
+              Download MP4
+            </button>
+          </div>
+          <button
+            id="btn-download-all"
+            type="button"
+            class="mvp-output-toolbar-btn mvp-output-toolbar-all"
+          >
+            Download All
+          </button>
         </div>
-        <div id="png-card-links" class="mvp-card-links"></div>
-        <div id="mp4-card-links" class="mvp-card-links"></div>
-        <div id="mp4-card-grid" class="mvp-mp4-grid" hidden></div>
         <div class="mvp-preview-grid">
           <img id="png-preview" alt="PNG preview" hidden />
           <video id="mp4-preview" controls hidden></video>
