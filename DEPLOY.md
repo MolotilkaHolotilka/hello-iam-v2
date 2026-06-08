@@ -3,7 +3,6 @@
 HELLOIAM Content OS: Node UI (`post-ops-ui`) + Remotion render (`helloiam-remotion`) в одном контейнере.
 
 > В приложении **нет авторизации**. Перед выкладкой в интернет поставь **HTTPS + Basic Auth** (nginx/Caddy) или VPN.
-> Внешние API-ключи (FAL/OpenAI) для основного workflow **не нужны**.
 
 ---
 

@@ -1,15 +1,19 @@
 import {
-  refreshContentCardsEditor,
-  setContentCardsAssetPaths,
-  setContentCardsWorkflow,
-  setupContentCardsEditor
-} from "./mvp-cards-editor.js";
+  createContentSource,
+  getStoredContentLabel,
+  getStoredTemplateId,
+  hasStoredContent,
+  setStoredContentLabel,
+  setStoredTemplateId
+} from "./mvp-content-source.js";
 import { renderMvpNav } from "./mvp-nav.js";
 
 const state = {
   templates: [],
   animationPresets: ["clean-rise", "slide-fly", "soft-float"]
 };
+
+const contentSource = createContentSource();
 
 const $ = (id) => document.getElementById(id);
 
@@ -43,23 +47,24 @@ function selectedTemplate() {
   return state.templates.find((template) => template.id === templateId) || null;
 }
 
-function applyTemplateWorkflow(template) {
-  if (!template) return;
-  setContentCardsWorkflow(template.workflow || {});
+function updateContentFileLabel(fileName) {
+  const label = $("content-file-label");
+  label.textContent = fileName
+    ? `Selected file: ${fileName}`
+    : "Using template default content.";
 }
 
-function syncTemplateContext(template) {
-  if (!template) return;
-  applyTemplateWorkflow(template);
-  setContentCardsAssetPaths(template.assetPaths || [], template.id);
+function applyContent(value, fileName = null) {
+  contentSource.setValue(value);
+  setStoredContentLabel(fileName);
+  updateContentFileLabel(fileName);
 }
 
 function fillTemplateExamples(template) {
   if (!template) return;
-  $("mapping-json").value = formatJson(template.mappingExample);
-  $("content-json").value = formatJson(template.contentExample);
-  syncTemplateContext(template);
-  refreshContentCardsEditor($("content-json"), formatJson);
+  applyContent(formatJson(template.contentExample), null);
+  $("content-file").value = "";
+  setStoredTemplateId(template.id);
 }
 
 function renderTemplateOptions(preferredTemplateId = "") {
@@ -72,22 +77,17 @@ function renderTemplateOptions(preferredTemplateId = "") {
   if (preferredTemplateId) {
     $("template-select").value = preferredTemplateId;
   }
-  fillTemplateExamples(selectedTemplate());
+  if (hasStoredContent()) {
+    updateContentFileLabel(getStoredContentLabel());
+  } else {
+    fillTemplateExamples(selectedTemplate());
+  }
 }
 
 function renderPresetOptions() {
   $("animation-preset").innerHTML = state.animationPresets
     .map((preset) => `<option value="${preset}">${preset}</option>`)
     .join("");
-}
-
-async function readFileInto(fileInput, textarea) {
-  const file = fileInput.files?.[0];
-  if (!file) return;
-  textarea.value = await file.text();
-  if (textarea.id === "content-json") {
-    refreshContentCardsEditor(textarea, formatJson);
-  }
 }
 
 function showOutput(payload) {
@@ -107,7 +107,6 @@ function showOutput(payload) {
         )
         .join("")
     : "";
-
   const mp4ListEl = $("mp4-card-links");
   const mp4GridEl = $("mp4-card-grid");
   if (splitVideos) {
@@ -161,38 +160,10 @@ async function loadTemplates(preferredTemplateId = "") {
   setStatus("Ready", "success");
 }
 
-async function addJsxWorkflow() {
-  const jsx = $("jsx-source").value.trim();
-  if (!jsx) {
-    setStatus("Paste JSX first", "error");
-    return;
-  }
-
-  $("add-jsx-workflow").disabled = true;
-  setStatus("Creating JSX workflow...", "loading");
-
-  try {
-    const cardCount = Number($("workflow-card-count").value || 0);
-    const payload = await requestJson("/api/templates/from-jsx", {
-      method: "POST",
-      body: JSON.stringify({
-        templateId: $("jsx-template-id").value,
-        templateName: $("jsx-template-name").value,
-        exportName: $("jsx-export-name").value,
-        jsx,
-        workflow: cardCount > 0 ? { cardCount } : {},
-        mapping: $("mapping-json").value,
-        content: $("content-json").value
-      })
-    });
-
-    await loadTemplates(payload.template?.id || "");
-    setStatus(`Workflow imported: ${payload.template?.id}`, "success");
-  } catch (error) {
-    setStatus(error.message, "error", error.details || []);
-  } finally {
-    $("add-jsx-workflow").disabled = false;
-  }
+async function readContentFile(fileInput) {
+  const file = fileInput.files?.[0];
+  if (!file) return;
+  applyContent(await file.text(), file.name);
 }
 
 async function runRender() {
@@ -211,8 +182,8 @@ async function runRender() {
       method: "POST",
       body: JSON.stringify({
         templateId: template.id,
-        mapping: $("mapping-json").value,
-        content: $("content-json").value,
+        mapping: formatJson(template.mappingExample),
+        content: contentSource.getValue(),
         animationPreset: $("animation-preset").value,
         workflow: template.workflow || {}
       })
@@ -228,26 +199,15 @@ async function runRender() {
 
 function wireEvents() {
   $("template-select").addEventListener("change", () => {
-    const template = selectedTemplate();
-    fillTemplateExamples(template);
+    fillTemplateExamples(selectedTemplate());
     setStatus("Ready", "success");
   });
-  $("mapping-file").addEventListener("change", (event) =>
-    readFileInto(event.target, $("mapping-json"))
-  );
-  $("content-file").addEventListener("change", (event) =>
-    readFileInto(event.target, $("content-json"))
-  );
-  $("jsx-file").addEventListener("change", (event) =>
-    readFileInto(event.target, $("jsx-source"))
-  );
+  $("content-file").addEventListener("change", (event) => readContentFile(event.target));
   $("run-render").addEventListener("click", runRender);
-  $("add-jsx-workflow").addEventListener("click", addJsxWorkflow);
 }
 
 renderMvpNav("render");
 wireEvents();
-setupContentCardsEditor($("content-json"), formatJson);
-loadTemplates().catch((error) => {
+loadTemplates(getStoredTemplateId() || "").catch((error) => {
   setStatus(error.message, "error", error.details || []);
 });

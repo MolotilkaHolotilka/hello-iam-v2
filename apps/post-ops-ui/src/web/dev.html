@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>_dev — Content cards — HELLOIAM.AM</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;700&family=Instrument+Serif:ital@0;1&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body class="mvp-body">
+    <main class="mvp-shell">
+      <header class="mvp-header mvp-header-with-nav">
+        <div>
+          <p class="mvp-kicker">HELLOIAM.AM</p>
+          <h1>_dev</h1>
+        </div>
+        <nav id="mvp-top-nav" class="mvp-top-nav" aria-label="Main navigation"></nav>
+      </header>
+
+      <section class="mvp-controls" aria-label="Template selection">
+        <label class="mvp-field">
+          <span>Template</span>
+          <select id="template-select"></select>
+        </label>
+      </section>
+
+      <article class="mvp-panel mvp-content-file" aria-label="Content JSON">
+        <div class="mvp-panel-head">
+          <h2>Content JSON</h2>
+          <input id="content-file" type="file" accept=".json,application/json" />
+        </div>
+        <p id="content-file-label" class="mvp-content-file-label">Using template default content.</p>
+      </article>
+
+      <section
+        id="content-cards-section"
+        class="mvp-cards-section"
+        aria-label="Content cards editor"
+        hidden
+      >
+        <div class="mvp-cards-section-head">
+          <h2>Content cards</h2>
+          <p id="content-cards-hint" class="mvp-cards-hint">
+            Edit card fields below — changes apply to the selected content file.
+          </p>
+        </div>
+        <p id="content-cards-error" class="mvp-cards-error" hidden></p>
+        <div id="content-root-fields" class="mvp-cards-root-fields"></div>
+        <div
+          id="content-cards-carousel-shell"
+          class="mvp-cards-carousel-shell"
+          hidden
+          aria-label="Card preview carousel"
+        >
+          <button
+            type="button"
+            class="mvp-carousel-arrow mvp-carousel-arrow-side"
+            data-carousel-nav="prev"
+            aria-label="Previous card"
+          >
+            ←
+          </button>
+          <div class="mvp-cards-carousel-viewport" id="content-cards-carousel-viewport">
+            <div class="mvp-cards-carousel-track" id="content-cards-carousel-track"></div>
+          </div>
+          <button
+            type="button"
+            class="mvp-carousel-arrow mvp-carousel-arrow-side"
+            data-carousel-nav="next"
+            aria-label="Next card"
+          >
+            →
+          </button>
+        </div>
+        <div class="mvp-cards-nav" id="content-cards-nav"></div>
+        <article id="content-card-panel" class="mvp-card-panel"></article>
+      </section>
+
+      <section id="status-box" class="mvp-status-box" data-tone="neutral"></section>
+    </main>
+
+    <script type="module" src="/mvp-dev-app.js"></script>
+  </body>
+</html>

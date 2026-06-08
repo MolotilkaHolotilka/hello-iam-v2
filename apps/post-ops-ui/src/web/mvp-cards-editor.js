@@ -171,13 +171,13 @@ function updateAssetDatalist() {
     .join("");
 }
 
-function navigateCards(textarea, formatJson, delta) {
-  const parsed = getParsedContent(textarea);
+function navigateCards(contentSource, formatJson, delta) {
+  const parsed = getParsedContent(contentSource);
   if (!parsed.ok || !parsed.data.cards.length) return;
   const count = parsed.data.cards.length;
   cardsEditorState.activeIndex =
     (cardsEditorState.activeIndex + delta + count) % count;
-  renderContentCardsEditor(textarea, formatJson);
+  renderContentCardsEditor(contentSource, formatJson);
 }
 
 function setCarouselShellVisible(visible) {
@@ -255,14 +255,14 @@ function refreshAllCarouselSlides(cards) {
   scheduleCarouselLayout();
 }
 
-export function writeContentJson(textarea, data, formatJson) {
+export function writeContentJson(contentSource, data, formatJson) {
   cardsEditorState.syncing = true;
-  textarea.value = formatJson(data);
+  contentSource.setValue(formatJson(data));
   cardsEditorState.syncing = false;
 }
 
-function getParsedContent(textarea) {
-  return parseContentCards(textarea.value);
+function getParsedContent(contentSource) {
+  return parseContentCards(contentSource.getValue());
 }
 
 function updateImagePreviews(root) {
@@ -280,8 +280,8 @@ function updateImagePreviews(root) {
   });
 }
 
-export function renderContentCardsEditor(textarea, formatJson, options = {}) {
-  const parsed = getParsedContent(textarea);
+export function renderContentCardsEditor(contentSource, formatJson, options = {}) {
+  const parsed = getParsedContent(contentSource);
   if (!parsed.ok) {
     setCardsSectionVisible(false);
     setCarouselShellVisible(false);
@@ -323,18 +323,18 @@ export function renderContentCardsEditor(textarea, formatJson, options = {}) {
   if (!options.preservePanel) {
     panelEl.innerHTML = cards.length
       ? `<header class="mvp-card-panel-head"><h3>Card ${cardsEditorState.activeIndex + 1}</h3></header>${renderCardPanel(activeCard, cardsEditorState.activeIndex)}`
-      : `<p class="mvp-cards-empty">Add objects to the "cards" array in Content JSON.</p>`;
+      : `<p class="mvp-cards-empty">Select a content JSON file with a "cards" array.</p>`;
     updateImagePreviews(panelEl);
   }
 
   document.getElementById("content-cards-hint").textContent =
     cards.length === 1
-      ? "1 card — preview above, edit fields below or in JSON."
-      : `${cards.length} cards — use arrows or tabs to switch, edits sync everywhere.`;
+      ? "1 card — preview above, edit fields below."
+      : `${cards.length} cards — use arrows or tabs to switch.`;
 }
 
-function applyFieldChange(textarea, formatJson, { cardIndex, rootKey, fieldKey, value }) {
-  const parsed = getParsedContent(textarea);
+function applyFieldChange(contentSource, formatJson, { cardIndex, rootKey, fieldKey, value }) {
+  const parsed = getParsedContent(contentSource);
   if (!parsed.ok) return;
 
   const next = structuredClone(parsed.data);
@@ -345,7 +345,7 @@ function applyFieldChange(textarea, formatJson, { cardIndex, rootKey, fieldKey, 
     next.cards[cardIndex][fieldKey] = value;
   }
 
-  writeContentJson(textarea, next, formatJson);
+  writeContentJson(contentSource, next, formatJson);
 }
 
 function syncColorInputs(source) {
@@ -361,17 +361,7 @@ function syncColorInputs(source) {
   }
 }
 
-export function setupContentCardsEditor(textarea, formatJson) {
-  const scheduleRenderFromJson = () => {
-    if (cardsEditorState.syncing) return;
-    clearTimeout(cardsEditorState.debounceTimer);
-    cardsEditorState.debounceTimer = setTimeout(() => {
-      renderContentCardsEditor(textarea, formatJson);
-    }, 120);
-  };
-
-  textarea.addEventListener("input", scheduleRenderFromJson);
-
+export function setupContentCardsEditor(contentSource, formatJson) {
   const section = document.getElementById("content-cards-section");
   section.addEventListener("input", (event) => {
     if (cardsEditorState.syncing) return;
@@ -391,14 +381,14 @@ export function setupContentCardsEditor(textarea, formatJson) {
         ? target.value
         : "";
 
-    applyFieldChange(textarea, formatJson, {
+    applyFieldChange(contentSource, formatJson, {
       rootKey: rootKey || undefined,
       cardIndex: cardIndexRaw ? Number(cardIndexRaw) : undefined,
       fieldKey: fieldKey || undefined,
       value
     });
 
-    const parsedAfter = getParsedContent(textarea);
+    const parsedAfter = getParsedContent(contentSource);
     if (parsedAfter.ok) {
       const cards = parsedAfter.data.cards;
       const cardIndex = cardIndexRaw ? Number(cardIndexRaw) : null;
@@ -416,7 +406,7 @@ export function setupContentCardsEditor(textarea, formatJson) {
     const carouselNav = event.target.closest("[data-carousel-nav]");
     if (carouselNav) {
       const delta = carouselNav.dataset.carouselNav === "next" ? 1 : -1;
-      navigateCards(textarea, formatJson, delta);
+      navigateCards(contentSource, formatJson, delta);
       return;
     }
 
@@ -425,7 +415,7 @@ export function setupContentCardsEditor(textarea, formatJson) {
       const index = Number(carouselSlide.dataset.carouselSlide);
       if (index !== cardsEditorState.activeIndex) {
         cardsEditorState.activeIndex = index;
-        renderContentCardsEditor(textarea, formatJson);
+        renderContentCardsEditor(contentSource, formatJson);
       }
       return;
     }
@@ -433,27 +423,27 @@ export function setupContentCardsEditor(textarea, formatJson) {
     const target = event.target.closest("[data-card-index], [data-card-nav]");
     if (!target) return;
 
-    const parsed = getParsedContent(textarea);
+    const parsed = getParsedContent(contentSource);
     if (!parsed.ok) return;
     const count = parsed.data.cards.length;
 
     if (target.hasAttribute("data-card-nav")) {
       const delta = target.dataset.cardNav === "next" ? 1 : -1;
-      navigateCards(textarea, formatJson, delta);
+      navigateCards(contentSource, formatJson, delta);
       return;
     }
 
     if (target.classList.contains("mvp-card-tab")) {
       cardsEditorState.activeIndex = Number(target.dataset.cardIndex);
-      renderContentCardsEditor(textarea, formatJson);
+      renderContentCardsEditor(contentSource, formatJson);
     }
   });
 
   window.addEventListener("resize", scheduleCarouselLayout);
 
-  renderContentCardsEditor(textarea, formatJson);
+  renderContentCardsEditor(contentSource, formatJson);
 }
 
-export function refreshContentCardsEditor(textarea, formatJson) {
-  renderContentCardsEditor(textarea, formatJson);
+export function refreshContentCardsEditor(contentSource, formatJson) {
+  renderContentCardsEditor(contentSource, formatJson);
 }

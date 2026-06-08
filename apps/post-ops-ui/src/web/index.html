@@ -32,108 +32,21 @@
           <span>Animation preset</span>
           <select id="animation-preset"></select>
         </label>
+      </section>
 
+      <article class="mvp-panel mvp-content-file" aria-label="Content JSON">
+        <div class="mvp-panel-head">
+          <h2>Content JSON</h2>
+          <input id="content-file" type="file" accept=".json,application/json" />
+        </div>
+        <p id="content-file-label" class="mvp-content-file-label">Using template default content.</p>
+      </article>
+
+      <div class="mvp-run-row">
         <button id="run-render" class="mvp-run-button" type="button">
           Run Render
         </button>
-      </section>
-
-      <details class="mvp-jsx-workflow">
-        <summary>Import workflow</summary>
-        <div class="mvp-jsx-grid">
-          <label class="mvp-field">
-            <span>Template id</span>
-            <input id="jsx-template-id" type="text" placeholder="my-template" />
-          </label>
-          <label class="mvp-field">
-            <span>Name</span>
-            <input id="jsx-template-name" type="text" placeholder="My JSX Template" />
-          </label>
-          <label class="mvp-field">
-            <span>Card count</span>
-            <input id="workflow-card-count" type="number" min="1" placeholder="auto" />
-          </label>
-          <label class="mvp-field">
-            <span>Export name</span>
-            <input id="jsx-export-name" type="text" placeholder="Template or default" />
-          </label>
-          <label class="mvp-field mvp-jsx-file">
-            <span>JSX file</span>
-            <input id="jsx-file" type="file" accept=".jsx,.tsx,.js,.ts,text/plain" />
-          </label>
-        </div>
-        <textarea
-          id="jsx-source"
-          class="mvp-jsx-source"
-          spellcheck="false"
-          placeholder="Paste ready template.tsx with export default / export const Template. Mapping and content are taken from the JSON boxes below."
-        ></textarea>
-        <button id="add-jsx-workflow" class="mvp-secondary-button" type="button">
-          Import Workflow
-        </button>
-      </details>
-
-      <section class="mvp-json-grid" aria-label="JSON inputs">
-        <article class="mvp-panel">
-          <div class="mvp-panel-head">
-            <h2>Mapping JSON</h2>
-            <input id="mapping-file" type="file" accept=".json,application/json" />
-          </div>
-          <textarea id="mapping-json" spellcheck="false"></textarea>
-        </article>
-
-        <article class="mvp-panel">
-          <div class="mvp-panel-head">
-            <h2>Content JSON</h2>
-            <input id="content-file" type="file" accept=".json,application/json" />
-          </div>
-          <textarea id="content-json" spellcheck="false"></textarea>
-        </article>
-      </section>
-
-      <section
-        id="content-cards-section"
-        class="mvp-cards-section"
-        aria-label="Content cards editor"
-        hidden
-      >
-        <div class="mvp-cards-section-head">
-          <h2>Content cards</h2>
-          <p id="content-cards-hint" class="mvp-cards-hint">
-            Edit fields here or in Content JSON — changes sync in real time.
-          </p>
-        </div>
-        <p id="content-cards-error" class="mvp-cards-error" hidden></p>
-        <div id="content-root-fields" class="mvp-cards-root-fields"></div>
-        <div
-          id="content-cards-carousel-shell"
-          class="mvp-cards-carousel-shell"
-          hidden
-          aria-label="Card preview carousel"
-        >
-          <button
-            type="button"
-            class="mvp-carousel-arrow mvp-carousel-arrow-side"
-            data-carousel-nav="prev"
-            aria-label="Previous card"
-          >
-            ←
-          </button>
-          <div class="mvp-cards-carousel-viewport" id="content-cards-carousel-viewport">
-            <div class="mvp-cards-carousel-track" id="content-cards-carousel-track"></div>
-          </div>
-          <button
-            type="button"
-            class="mvp-carousel-arrow mvp-carousel-arrow-side"
-            data-carousel-nav="next"
-            aria-label="Next card"
-          >
-            →
-          </button>
-        </div>
-        <div class="mvp-cards-nav" id="content-cards-nav"></div>
-        <article id="content-card-panel" class="mvp-card-panel"></article>
-      </section>
+      </div>
 
       <section id="status-box" class="mvp-status-box" data-tone="neutral"></section>
 
