@@ -12,6 +12,8 @@ import {
   RenderValidationError,
   resolveRenderProps
 } from "./props-resolver.js";
+import { persistRuntimeTemplateId } from "../lib/css-import-allowlist-store.js";
+import { stripEmptyAssetRefs } from "./content-template-service.js";
 import {
   ensureTemplateAssetDirs,
   migrateLegacyPathsForTemplate,
@@ -170,7 +172,8 @@ export async function prepareWorkflowPayload(payload = {}) {
     fps: workflow.fps
   };
   await ensureTemplateAssetDirs(templateId);
-  validateTemplateScopedAssets(templateId, resolved.props);
+  const propsForValidation = stripEmptyAssetRefs(resolved.props);
+  validateTemplateScopedAssets(templateId, propsForValidation);
 
   return {
     templateId,
@@ -298,6 +301,158 @@ export async function regenerateTemplateRegistry() {
   ].join("\n");
 
   await writeFile(REGISTRY_FILE, source, "utf8");
+}
+
+function humanTemplateName(templateId) {
+  return String(templateId || "")
+    .split("-")
+    .filter(Boolean)
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join(" ");
+}
+
+function buildGreenPlateMapping(templateId, cardCount) {
+  const slots = {};
+  const helloFields = [
+    "title",
+    "titleAccent",
+    "label",
+    "image",
+    "background",
+    "titleColor",
+    "accentColor",
+    "labelColor",
+    "introLayout"
+  ];
+  const quoteFields = [
+    "title",
+    "titleAccent",
+    "image",
+    "quote",
+    "label",
+    "background",
+    "quoteColor",
+    "accentColor",
+    "titleColor",
+    "labelColor"
+  ];
+  const brandFields = ["brandLeft", "brandRight", "image", "background", "brandColor"];
+  const count = Math.max(1, Number(cardCount) || 1);
+
+  for (const field of helloFields) {
+    slots[`card1.${field}`] = `cards[0].${field}`;
+  }
+
+  for (let cardNum = 2; cardNum <= count - 1; cardNum += 1) {
+    const cardIndex = cardNum - 1;
+    for (const field of quoteFields) {
+      slots[`card${cardNum}.${field}`] = `cards[${cardIndex}].${field}`;
+    }
+  }
+
+  if (count >= 2) {
+    const brandNum = count;
+    const brandIndex = count - 1;
+    for (const field of brandFields) {
+      slots[`card${brandNum}.${field}`] = `cards[${brandIndex}].${field}`;
+    }
+  }
+
+  return {
+    templateId,
+    format: "carousel-portrait",
+    slots
+  };
+}
+
+function buildCssImportWorkflow(templateId, cardCount, templateName) {
+  return {
+    id: templateId,
+    templateId,
+    name: templateName || humanTemplateName(templateId),
+    format: "carousel-portrait",
+    cardCount,
+    width: 1080,
+    height: 1350,
+    fps: 30,
+    durationPerCardFrames: 90,
+    composition: "TemplateRenderPortrait",
+    splitVideos: true,
+    exportName: "Template"
+  };
+}
+
+/**
+ * Scaffold a green-plate re-export template from CSS import output.
+ *
+ * @param {{ templateId: string, content: object, baseTemplateId?: string }} payload
+ */
+export async function createTemplateFromCssImport(payload = {}) {
+  const templateId = slugify(payload.templateId);
+  if (!templateId) {
+    throw new RenderValidationError("Template id is required");
+  }
+
+  const content = parseOptionalJson(payload.content, "Content", { cards: [] });
+  const cardCount = Array.isArray(content.cards) ? Math.max(content.cards.length, 1) : 1;
+  const templateName = payload.templateName || humanTemplateName(templateId);
+  const baseTemplateId = payload.baseTemplateId || "green-plate-intro";
+
+  const templateDir = path.join(TEMPLATES_ROOT, templateId);
+  if (existsSync(templateDir)) {
+    throw new RenderValidationError("Template already exists", [
+      `Choose another id or remove the existing folder: ${templateId}`
+    ]);
+  }
+
+  const mapping = buildGreenPlateMapping(templateId, cardCount);
+  const workflow = buildCssImportWorkflow(templateId, cardCount, templateName);
+  const templateSource = `export {GreenPlateIntroTemplate as Template} from '../${baseTemplateId}/template';\n`;
+
+  await mkdir(templateDir, { recursive: true });
+  await ensureTemplateAssetDirs(templateId);
+  await persistRuntimeTemplateId(templateId);
+  await writeFile(path.join(templateDir, "template.tsx"), templateSource, "utf8");
+  await writeFile(
+    path.join(templateDir, "mapping.example.json"),
+    `${JSON.stringify(mapping, null, 2)}\n`,
+    "utf8"
+  );
+  await writeFile(
+    path.join(templateDir, "content.example.json"),
+    `${JSON.stringify(content, null, 2)}\n`,
+    "utf8"
+  );
+  await writeFile(
+    path.join(templateDir, "workflow.json"),
+    `${JSON.stringify(workflow, null, 2)}\n`,
+    "utf8"
+  );
+  await writeFile(
+    path.join(templateDir, "README.md"),
+    [
+      `# ${templateName}`,
+      "",
+      "Imported from CSS via post-ops-ui Import page.",
+      `Base layout: \`${baseTemplateId}\`.`,
+      ""
+    ].join("\n"),
+    "utf8"
+  );
+
+  await regenerateTemplateRegistry();
+
+  return {
+    ok: true,
+    template: {
+      id: templateId,
+      name: templateName,
+      format: mapping.format,
+      workflow,
+      mappingExample: mapping,
+      contentExample: content
+    }
+  };
 }
 
 export async function createTemplateWorkflowFromJsx(payload = {}) {

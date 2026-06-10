@@ -82,15 +82,18 @@ function renderField(key, value, cardIndex) {
 
   if (kind === "image") {
     const preview = assetPreviewUrl(value);
-    return `${label}
+    return `<div class="mvp-card-field">
+      <span>${escapeHtml(key)}</span>
       <input type="hidden" id="${escapeHtml(id)}" data-card-index="${cardIndex}" data-field-key="${escapeHtml(key)}" value="${escapeHtml(value ?? "")}" />
       <code class="mvp-card-image-path">${escapeHtml(value || "No image selected")}</code>
       <div class="mvp-card-upload-row">
-        <input type="file" id="${escapeHtml(id)}-upload" data-image-upload="true" data-card-index="${cardIndex}" data-field-key="${escapeHtml(key)}" accept="image/png,image/jpeg,image/webp,image/gif,image/svg+xml" />
-        <span>Upload image</span>
+        <label class="mvp-upload-button">
+          Upload image
+          <input type="file" id="${escapeHtml(id)}-upload" data-image-upload="true" data-card-index="${cardIndex}" data-field-key="${escapeHtml(key)}" accept="image/png,image/jpeg,image/webp,image/gif,image/svg+xml" hidden />
+        </label>
       </div>
       ${preview ? `<img class="mvp-card-image-preview" data-preview-for="${escapeHtml(id)}" src="${escapeHtml(preview)}" alt="" />` : ""}
-    </label>`;
+    </div>`;
   }
 
   if (kind === "textarea") {
@@ -234,7 +237,14 @@ function layoutContentCarousel() {
   viewport.style.setProperty("--card-aspect-h", String(cardH));
 
   const step = slideWidth + gap;
-  const offset = (viewportWidth - slideWidth) / 2 - cardsEditorState.activeIndex * step;
+  const leadInset =
+    Number.parseFloat(
+      getComputedStyle(viewport).getPropertyValue("--carousel-lead-inset").trim()
+    ) || 0;
+  const centerOffset = (viewportWidth - slideWidth) / 2;
+  const index = cardsEditorState.activeIndex;
+  const anchorOffset = index === 0 ? leadInset : centerOffset;
+  const offset = anchorOffset - index * step;
   track.style.transform = `translateX(${offset}px)`;
   updateCarouselSlideStates(cardsEditorState.activeIndex, track.children.length);
 }

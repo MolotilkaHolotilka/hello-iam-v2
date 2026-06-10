@@ -160,6 +160,22 @@ function shouldSkipRule(rule) {
   return false;
 }
 
+function extractTextContent(rule) {
+  for (const decl of rule.declarations) {
+    if (decl.property !== "content") continue;
+
+    const raw = decl.value.trim();
+    if (!raw || raw === "none" || raw === '""' || raw === "''") {
+      return "";
+    }
+
+    const unquoted = raw.replace(/^["']|["']$/g, "");
+    return unquoted.replace(/\\A/g, "\n").replace(/\\n/g, "\n");
+  }
+
+  return "";
+}
+
 function buildComponent(rule, index, usedIds) {
   const type = inferComponentType(rule);
   const role = inferRole(rule, type);
@@ -183,7 +199,7 @@ function buildComponent(rule, index, usedIds) {
     mediaQuery: rule.mediaQuery,
     box: buildBox(rule.layout),
     style: buildStyle(rule),
-    text: "",
+    text: extractTextContent(rule),
     hints: componentHintsFromRule(rule, { type, role })
   };
 }

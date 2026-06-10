@@ -23,6 +23,14 @@ const contentSource = createContentSource();
 
 const $ = (id) => document.getElementById(id);
 
+function escapeHtml(value) {
+  return String(value)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;");
+}
+
 function formatJson(value) {
   return JSON.stringify(value, null, 2);
 }

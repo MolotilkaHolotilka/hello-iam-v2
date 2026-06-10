@@ -75,7 +75,7 @@ function validateContentForSave(content) {
   return parsed;
 }
 
-function stripEmptyAssetRefs(value) {
+export function stripEmptyAssetRefs(value) {
   if (Array.isArray(value)) {
     return value.map((item) => stripEmptyAssetRefs(item));
   }

@@ -133,8 +133,13 @@ function isPipelineDemoTemplate(template) {
   return template?.id === DEMO_TEMPLATE_ID;
 }
 
+function isCssImportStudioSession() {
+  return new URLSearchParams(window.location.search).get("from") === "import";
+}
+
 function syncDemoStudioMode(template) {
   const isDemo = isPipelineDemoTemplate(template);
+  const fromImport = isCssImportStudioSession();
   document.body.classList.toggle("mvp-demo-studio", isDemo);
 
   const banner = $("demo-banner");
@@ -150,7 +155,7 @@ function syncDemoStudioMode(template) {
   if (fileLabel) fileLabel.hidden = isDemo;
 
   const details = $("studio-editor-details");
-  if (details) details.open = !isDemo;
+  if (details) details.open = fromImport || !isDemo;
 }
 
 function setDirty(dirty) {
@@ -439,21 +444,26 @@ async function uploadCardImage(file) {
   form.append("files", file);
 
   setStatus("Uploading image...", "loading");
-  const payload = await requestFormJson(
-    `/api/templates/${encodeURIComponent(template.id)}/assets/images`,
-    form
-  );
-  const uploaded = payload.uploaded?.[0];
-  const paths = payload.assets?.paths || [];
-  template.assetPaths = paths;
-  setContentCardsAssetPaths(paths, template.id);
-  setDirty(true);
-  setStatus("Image uploaded", "success");
+  try {
+    const payload = await requestFormJson(
+      `/api/templates/${encodeURIComponent(template.id)}/assets/images`,
+      form
+    );
+    const uploaded = payload.uploaded?.[0];
+    const paths = payload.assets?.paths || [];
+    template.assetPaths = paths;
+    setContentCardsAssetPaths(paths, template.id);
+    setDirty(true);
+    setStatus("Image uploaded", "success");
 
-  return {
-    path: uploaded?.path || "",
-    assetPaths: paths
-  };
+    return {
+      path: uploaded?.path || "",
+      assetPaths: paths
+    };
+  } catch (error) {
+    setStatus(error.message, "error");
+    return null;
+  }
 }
 
 async function saveContent() {

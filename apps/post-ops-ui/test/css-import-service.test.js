@@ -1,8 +1,10 @@
 import assert from "node:assert/strict";
-import { readFile } from "node:fs/promises";
+import { existsSync } from "node:fs";
+import { readFile, rm } from "node:fs/promises";
 import path from "node:path";
 import test from "node:test";
 import { fileURLToPath } from "node:url";
+import { hasRuntimeTemplateId } from "../src/lib/template-allowlist.js";
 import { CssParseError } from "../src/services/css-parse-service.js";
 import { importCssToTemplate } from "../src/services/css-import-service.js";
 import { LlmCssMapperError } from "../src/services/llm-css-mapper-service.js";
@@ -53,19 +55,27 @@ function createMockLlmClient(response = mockMappedPayload) {
 
 test("importCssToTemplate componentizes CSS and maps via injected LLM", async () => {
   const css = await readFile(lavashFixture, "utf8");
-  const result = await importCssToTemplate(
-    { css, templateId: "my-imported-template" },
-    { llmClient: createMockLlmClient() }
-  );
+  const templateId = `my-imported-template-${Date.now()}`;
+  const templateDir = path.join(__dirname, "../../helloiam-remotion/src/templates", templateId);
 
-  assert.equal(result.ok, true);
-  assert.equal(result.templateId, "my-imported-template");
-  assert.equal(result.componentized.frame.width, 1080);
-  assert.ok(result.componentized.components.length >= 5);
-  assert.equal(result.mapped.content.item, "imported-lavash-card");
-  assert.equal(result.mapped.content.cards.length, 1);
-  assert.equal(result.mapped.content.cards[0].background, "#D9DDE0");
-  assert.ok(result.mapped.warnings.length >= 1);
+  try {
+    const result = await importCssToTemplate(
+      { css, templateId, createNew: true },
+      { llmClient: createMockLlmClient() }
+    );
+
+    assert.equal(result.ok, true);
+    assert.equal(result.templateId, templateId);
+    assert.equal(result.componentized.frame.width, 1080);
+    assert.ok(result.componentized.components.length >= 5);
+    assert.equal(result.mapped.content.item, "imported-lavash-card");
+    assert.equal(result.mapped.content.cards.length, 1);
+    assert.equal(result.mapped.content.cards[0].background, "#D9DDE0");
+    assert.ok(result.mapped.warnings.length >= 1);
+    assert.equal(result.created, true);
+  } finally {
+    await rm(templateDir, { recursive: true, force: true });
+  }
 });
 
 test("importCssToTemplate rejects empty css", async () => {
@@ -87,7 +97,7 @@ test("importCssToTemplate surfaces LLM failures as 502", async () => {
   await assert.rejects(
     () =>
       importCssToTemplate(
-        { css },
+        { css, templateId: "llm-failure-test" },
         {
           llmClient: async () => {
             throw new LlmCssMapperError("LLM unavailable");
@@ -95,6 +105,47 @@ test("importCssToTemplate surfaces LLM failures as 502", async () => {
         }
       ),
     LlmCssMapperError
+  );
+});
+
+test("importCssToTemplate scaffolds template without OPENAI_API_KEY", async () => {
+  const css = await readFile(lavashFixture, "utf8");
+  const templateId = `css-import-test-${Date.now()}`;
+  const templateDir = path.join(
+    __dirname,
+    "../../helloiam-remotion/src/templates",
+    templateId
+  );
+
+  try {
+    const result = await importCssToTemplate({
+      css,
+      templateId,
+      createNew: true
+    });
+
+    assert.equal(result.ok, true);
+    assert.equal(result.templateId, templateId);
+    assert.equal(result.created, true);
+    assert.ok(existsSync(path.join(templateDir, "template.tsx")));
+    assert.ok(existsSync(path.join(templateDir, "workflow.json")));
+    assert.ok(existsSync(path.join(templateDir, "content.example.json")));
+    assert.equal(result.mapped.content.cards[0].background, "#D9DDE0");
+    assert.equal(hasRuntimeTemplateId(templateId), true);
+  } finally {
+    await rm(templateDir, { recursive: true, force: true });
+  }
+});
+
+test("importCssToTemplate blocks legacy template overwrite", async () => {
+  const css = await readFile(lavashFixture, "utf8");
+  await assert.rejects(
+    () =>
+      importCssToTemplate({
+        css,
+        templateId: "i-am-lavash-deep-dive"
+      }),
+    /legacy template/i
   );
 });
 

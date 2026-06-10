@@ -141,19 +141,25 @@ function renderWarnings(warnings = []) {
 }
 
 async function importCss() {
-  const templateId = $("css-template-id").value.trim();
-  const css = $("css-source").value;
+  const css = $("css-source").value.trim();
+  const templateIdOverride = $("css-template-id").value.trim();
+
+  if (!css) {
+    setStatus("Paste CSS before importing.", "error");
+    return;
+  }
 
   $("run-css-import").disabled = true;
   renderWarnings([]);
-  setStatus("Importing CSS...", "loading");
+  setStatus("Importing CSS and creating template...", "loading");
 
   try {
     const payload = await requestJson("/api/templates/import-css", {
       method: "POST",
       body: JSON.stringify({
         css,
-        templateId,
+        templateId: templateIdOverride || undefined,
+        createNew: true,
         options: {
           frameWidth: 1080,
           frameHeight: 1350
@@ -161,7 +167,7 @@ async function importCss() {
       })
     });
 
-    const nextTemplateId = payload.templateId || templateId;
+    const nextTemplateId = payload.templateId;
     const mapped = payload.mapped || {};
     if (!nextTemplateId) {
       throw new Error("Import did not return a template id.");
@@ -171,15 +177,9 @@ async function importCss() {
     }
 
     renderWarnings(mapped.warnings || []);
-    setStatus("Saving mapped content...", "loading");
-
-    const saved = await requestJson(`/api/templates/${encodeURIComponent(nextTemplateId)}/content`, {
-      method: "PATCH",
-      body: JSON.stringify({ content: mapped.content })
-    });
-
-    setContentForStudio(nextTemplateId, saved.content, null);
-    window.location.href = `/?template=${encodeURIComponent(nextTemplateId)}`;
+    setContentForStudio(nextTemplateId, mapped.content, null);
+    setStatus(`Created template ${nextTemplateId}. Opening Studio...`, "success");
+    window.location.href = `/?template=${encodeURIComponent(nextTemplateId)}&from=import`;
   } catch (error) {
     setStatus(error.message, "error", error.details || []);
   } finally {
@@ -200,16 +200,13 @@ async function loadTemplates() {
     $("import-template-select").value = fromQuery;
   }
 
-  $("css-template-id").value = selectedTemplateId();
   setStudioLink();
-  setStatus("Ready", "success");
+  setStatus("Ready — paste CSS to create a new template", "success");
 }
 
 function wireEvents() {
   $("import-template-select").addEventListener("change", () => {
-    const templateId = selectedTemplateId();
-    $("css-template-id").value = templateId;
-    setStudioLink(templateId);
+    setStudioLink(selectedTemplateId());
   });
   $("json-content-file").addEventListener("change", (event) => readJsonFile(event.target));
   $("apply-image-path").addEventListener("click", applyManualImagePath);

@@ -28,24 +28,27 @@
 
       <section class="mvp-controls" aria-label="Import template selection">
         <label class="mvp-field">
-          <span>Template</span>
+          <span>Template (JSON / image path tools)</span>
           <select id="import-template-select"></select>
         </label>
         <a id="open-studio-link" class="mvp-secondary-link" href="/">Open Studio</a>
       </section>
 
-      <section class="mvp-import-grid">
-        <article class="mvp-panel mvp-import-panel">
+      <section class="mvp-cards-section mvp-import-grid" aria-label="Import tools">
+        <article class="mvp-import-panel">
           <div class="mvp-panel-head">
             <div>
               <h2>JSON file</h2>
               <p id="json-import-label" class="mvp-content-file-label">No file selected.</p>
             </div>
-            <input id="json-content-file" type="file" accept=".json,application/json" />
+            <label class="mvp-upload-button">
+              Choose file
+              <input id="json-content-file" type="file" accept=".json,application/json" hidden />
+            </label>
           </div>
         </article>
 
-        <article class="mvp-panel mvp-import-panel">
+        <article class="mvp-import-panel">
           <div class="mvp-panel-head">
             <div>
               <h2>Image path</h2>
@@ -79,17 +82,17 @@
           </button>
         </article>
 
-        <article class="mvp-panel mvp-import-panel mvp-import-css-panel">
+        <article class="mvp-import-panel mvp-import-css-panel">
           <div class="mvp-panel-head">
             <div>
               <h2>Import CSS</h2>
-              <p class="mvp-content-file-label">Maps CSS into content cards.</p>
+              <p class="mvp-content-file-label">Creates a new template from CSS — no existing template required.</p>
             </div>
           </div>
           <div class="mvp-import-css-fields">
             <label class="mvp-field">
-              <span>Template ID</span>
-              <input id="css-template-id" type="text" placeholder="i-am-lavash-deep-dive" />
+              <span>Template ID (optional)</span>
+              <input id="css-template-id" type="text" placeholder="css-import-my-card" spellcheck="false" />
             </label>
             <label class="mvp-field">
               <span>CSS</span>

@@ -1,11 +1,18 @@
+const MVP_NAV_LINKS = [
+  { id: "render", href: "/", label: "Render" },
+  { id: "import", href: "/import.html", label: "Import" },
+  { id: "dev", href: "/dev.html", label: "_dev" },
+  { id: "assets", href: "/assets.html", label: "Template assets" },
+];
+
 export function renderMvpNav(active = "render") {
   const root = document.getElementById("mvp-top-nav");
   if (!root) return;
 
-  root.innerHTML = `
-    <a href="/" class="mvp-top-nav-link${active === "render" ? " is-active" : ""}">Render</a>
-    <a href="/import.html" class="mvp-top-nav-link${active === "import" ? " is-active" : ""}">Import</a>
-    <a href="/dev.html" class="mvp-top-nav-link${active === "dev" ? " is-active" : ""}">_dev</a>
-    <a href="/assets.html" class="mvp-top-nav-link${active === "assets" ? " is-active" : ""}">Template assets</a>
-  `;
+  root.innerHTML = MVP_NAV_LINKS.map(({ id, href, label }) => {
+    const isActive = active === id;
+    return `<a href="${href}" class="mvp-top-nav-link${isActive ? " is-active" : ""}"${
+      isActive ? ' aria-current="page"' : ""
+    }>${label}</a>`;
+  }).join("");
 }

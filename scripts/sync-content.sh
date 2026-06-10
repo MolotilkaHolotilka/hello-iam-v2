@@ -21,8 +21,12 @@ fi
 rsync -a --delete "$CACHE_DIR/content/" "$TARGET_DIR/content/"
 rsync -a "$CACHE_DIR/apps/helloiam-remotion/public/" "$TARGET_DIR/apps/helloiam-remotion/public/"
 
-if docker compose -f "$TARGET_DIR/docker-compose.yml" ps -q app >/dev/null 2>&1; then
-  docker compose -f "$TARGET_DIR/docker-compose.yml" exec -T app npm run index
+COMPOSE_FILE="$TARGET_DIR/docker-compose.hostinger.yaml"
+[ -f "$COMPOSE_FILE" ] || COMPOSE_FILE="$TARGET_DIR/docker-compose.yaml"
+[ -f "$COMPOSE_FILE" ] || COMPOSE_FILE="$TARGET_DIR/docker-compose.yml"
+
+if docker compose -f "$COMPOSE_FILE" ps -q app >/dev/null 2>&1; then
+  docker compose -f "$COMPOSE_FILE" exec -T app npm run index
 else
   (cd "$TARGET_DIR" && npm run index)
 fi

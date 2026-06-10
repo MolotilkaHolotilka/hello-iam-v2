@@ -54,37 +54,45 @@ for (const templateId of LEGACY_DEEP_DIVE_TEMPLATE_IDS) {
 
 test("lavash card-1 CSS import smoke matches legacy hello palette", async () => {
   const css = await readFile(lavashFixture, "utf8");
-  const result = await importCssToTemplate(
-    { css, templateId: "smoke-lavash-import" },
-    {
-      llmClient: async () =>
-        JSON.stringify({
-          content: {
-            item: "smoke-lavash",
-            cards: [
-              {
-                title: "",
-                titleAccent: "",
-                label: "",
-                image: "",
-                background: "#D9DDE0",
-                titleColor: "#0F0F10",
-                accentColor: "#D61E23",
-                labelColor: "#000000",
-                introLayout: "lavash"
-              }
-            ]
-          },
-          schema: { cards: [{ fields: ["title", "background", "accentColor"] }] },
-          warnings: []
-        })
-    }
-  );
+  const templateId = `smoke-lavash-import-${Date.now()}`;
+  const templateDir = path.join(templatesRoot, templateId);
 
-  assert.equal(result.ok, true);
-  assert.equal(result.componentized.frame.width, 1080);
-  assert.equal(result.componentized.frame.height, 1350);
-  assert.equal(result.mapped.content.cards[0].background, "#D9DDE0");
-  assert.equal(result.mapped.content.cards[0].accentColor, "#D61E23");
-  assert.equal(result.mapped.content.cards[0].introLayout, "lavash");
+  try {
+    const result = await importCssToTemplate(
+      { css, templateId, createNew: true },
+      {
+        llmClient: async () =>
+          JSON.stringify({
+            content: {
+              item: "smoke-lavash",
+              cards: [
+                {
+                  title: "",
+                  titleAccent: "",
+                  label: "",
+                  image: "",
+                  background: "#D9DDE0",
+                  titleColor: "#0F0F10",
+                  accentColor: "#D61E23",
+                  labelColor: "#000000",
+                  introLayout: "lavash"
+                }
+              ]
+            },
+            schema: { cards: [{ fields: ["title", "background", "accentColor"] }] },
+            warnings: []
+          })
+      }
+    );
+
+    assert.equal(result.ok, true);
+    assert.equal(result.componentized.frame.width, 1080);
+    assert.equal(result.componentized.frame.height, 1350);
+    assert.equal(result.mapped.content.cards[0].background, "#D9DDE0");
+    assert.equal(result.mapped.content.cards[0].accentColor, "#D61E23");
+    assert.equal(result.mapped.content.cards[0].introLayout, "lavash");
+  } finally {
+    const { rm } = await import("node:fs/promises");
+    await rm(templateDir, { recursive: true, force: true });
+  }
 });

@@ -5,6 +5,8 @@
  * Optional: OPENAI_MODEL (default gpt-4o-mini), OPENAI_BASE_URL (default OpenAI API).
  */
 
+import { mapComponentsToContentDeterministic } from "./css-deterministic-mapper-service.js";
+
 const DEFAULT_MODEL = "gpt-4o-mini";
 const DEFAULT_BASE_URL = "https://api.openai.com/v1";
 
@@ -207,7 +209,6 @@ export async function callOpenAiChat(params) {
       },
       body: JSON.stringify({
         model,
-        temperature: 0.2,
         response_format: { type: "json_object" },
         messages: params.messages
       })
@@ -238,31 +239,53 @@ export async function callOpenAiChat(params) {
 
 /**
  * Map componentized CSS to content.json + optional schema via LLM.
+ * Falls back to the deterministic mapper when OPENAI_API_KEY is missing.
  *
  * @param {Awaited<ReturnType<import("./css-componentizer-service.js").componentizeCss>>} componentized
- * @param {{ templateId?: string, llmClient?: typeof callOpenAiChat, model?: string, apiKey?: string }} [options]
+ * @param {{ templateId?: string, llmClient?: typeof callOpenAiChat, model?: string, apiKey?: string, preferDeterministic?: boolean }} [options]
  */
 export async function mapComponentsToContent(componentized, options = {}) {
   if (!componentized || !Array.isArray(componentized.components)) {
     throw new LlmCssMapperError("componentized input must include components[]");
   }
 
+  if (options.preferDeterministic) {
+    return mapComponentsToContentDeterministic(componentized, options);
+  }
+
+  const apiKey = options.apiKey ?? process.env.OPENAI_API_KEY;
+  if (!apiKey && !options.llmClient) {
+    return mapComponentsToContentDeterministic(componentized, options);
+  }
+
   const llmClient = options.llmClient ?? callOpenAiChat;
   const prompt = buildCssMappingPrompt(componentized, options);
 
-  const rawResponse = await llmClient({
-    messages: [
-      {
-        role: "system",
-        content:
-          "You are a design-to-Remotion mapper. Output strict JSON only, matching the requested shape."
-      },
-      { role: "user", content: prompt }
-    ],
-    model: options.model,
-    apiKey: options.apiKey
-  });
+  try {
+    const rawResponse = await llmClient({
+      messages: [
+        {
+          role: "system",
+          content:
+            "You are a design-to-Remotion mapper. Output strict JSON only, matching the requested shape."
+        },
+        { role: "user", content: prompt }
+      ],
+      model: options.model,
+      apiKey: options.apiKey
+    });
 
-  const parsed = parseLlmJsonResponse(rawResponse);
-  return validateMappedOutput(parsed);
+    const parsed = parseLlmJsonResponse(rawResponse);
+    return validateMappedOutput(parsed);
+  } catch (error) {
+    if (options.llmClient) {
+      throw error;
+    }
+    const fallback = mapComponentsToContentDeterministic(componentized, options);
+    fallback.warnings = [
+      ...(fallback.warnings || []),
+      `LLM mapper unavailable (${error.message}) — used deterministic CSS mapping`
+    ];
+    return fallback;
+  }
 }

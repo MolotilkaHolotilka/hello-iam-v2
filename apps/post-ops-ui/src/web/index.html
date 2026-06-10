@@ -51,38 +51,42 @@
           Built-in demo — edit optional
         </p>
         <p id="content-cards-error" class="mvp-cards-error" hidden></p>
-        <div
-          id="content-cards-carousel-shell"
-          class="mvp-cards-carousel-shell"
-          hidden
-          aria-label="Card preview carousel"
-        >
-          <button
-            type="button"
-            class="mvp-carousel-arrow mvp-carousel-arrow-side"
-            data-carousel-nav="prev"
-            aria-label="Previous card"
-          >
-            ←
-          </button>
-          <div class="mvp-cards-carousel-viewport" id="content-cards-carousel-viewport">
-            <div class="mvp-cards-carousel-track" id="content-cards-carousel-track"></div>
+        <div class="mvp-studio-grid">
+          <div class="mvp-preview-column">
+            <div
+              id="content-cards-carousel-shell"
+              class="mvp-cards-carousel-shell"
+              hidden
+              aria-label="Card preview carousel"
+            >
+              <button
+                type="button"
+                class="mvp-carousel-arrow mvp-carousel-arrow-side"
+                data-carousel-nav="prev"
+                aria-label="Previous card"
+              >
+                ←
+              </button>
+              <div class="mvp-cards-carousel-viewport" id="content-cards-carousel-viewport">
+                <div class="mvp-cards-carousel-track" id="content-cards-carousel-track"></div>
+              </div>
+              <button
+                type="button"
+                class="mvp-carousel-arrow mvp-carousel-arrow-side"
+                data-carousel-nav="next"
+                aria-label="Next card"
+              >
+                →
+              </button>
+            </div>
           </div>
-          <button
-            type="button"
-            class="mvp-carousel-arrow mvp-carousel-arrow-side"
-            data-carousel-nav="next"
-            aria-label="Next card"
-          >
-            →
-          </button>
+          <details id="studio-editor-details" class="mvp-studio-advanced">
+            <summary class="mvp-studio-advanced-summary">Edit content (optional)</summary>
+            <div id="content-root-fields" class="mvp-cards-root-fields"></div>
+            <div class="mvp-cards-nav" id="content-cards-nav"></div>
+            <article id="content-card-panel" class="mvp-card-panel"></article>
+          </details>
         </div>
-        <details id="studio-editor-details" class="mvp-studio-advanced">
-          <summary class="mvp-studio-advanced-summary">Edit content (optional)</summary>
-          <div id="content-root-fields" class="mvp-cards-root-fields"></div>
-          <div class="mvp-cards-nav" id="content-cards-nav"></div>
-          <article id="content-card-panel" class="mvp-card-panel"></article>
-        </details>
       </section>
 
       <div class="mvp-run-row">

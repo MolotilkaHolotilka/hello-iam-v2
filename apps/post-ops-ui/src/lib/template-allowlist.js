@@ -1,3 +1,8 @@
+import {
+  getRuntimeTemplateIds,
+  hasRuntimeTemplateId
+} from "./css-import-allowlist-store.js";
+
 /**
  * User-facing render templates (UI template picker + registry sync).
  *
@@ -29,6 +34,7 @@ export const LEGACY_DEEP_DIVE_TEMPLATE_IDS = [
 /**
  * CSS-imported replacements (canvas-from-css or green-plate drafts).
  * Empty until MP4 smoke comparison passes for a given series.
+ * Runtime imports are also persisted in data/css-import-allowlist.json.
  */
 export const PENDING_CSS_IMPORT_TEMPLATE_IDS = [];
 
@@ -41,11 +47,13 @@ export const ALLOWED_TEMPLATE_IDS = [
 
 const ALLOWED = new Set(ALLOWED_TEMPLATE_IDS);
 
+export { getRuntimeTemplateIds, hasRuntimeTemplateId };
+
 /** Shared base layouts — not selectable in the UI. */
 export const INTERNAL_TEMPLATE_DIRS = new Set(["green-plate-intro"]);
 
 export function isPublicTemplateId(templateId) {
-  return ALLOWED.has(templateId);
+  return ALLOWED.has(templateId) || hasRuntimeTemplateId(templateId);
 }
 
 export function getPublicTemplateLabel(templateId) {
@@ -59,7 +67,7 @@ export function isBuiltinTemplate(templateId) {
 export function shouldIncludeTemplateDir(dirName) {
   if (INTERNAL_TEMPLATE_DIRS.has(dirName)) return false;
   if (dirName.startsWith("_")) return false;
-  return ALLOWED.has(dirName);
+  return ALLOWED.has(dirName) || hasRuntimeTemplateId(dirName);
 }
 
 /**
